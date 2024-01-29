@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "474505725692",
+    "project_id": "pandiabili24",
+    "storage_bucket": "pandiabili24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474505725692:android:31d4989afe2bbabea0b979",
+        "android_client_info": {
+          "package_name": "com.digitalsubstation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmvzGEwo_eT2ISqGm3Yuv09QPssSOJhDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
