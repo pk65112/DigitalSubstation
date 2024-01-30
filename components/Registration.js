@@ -5,18 +5,19 @@ import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 
 const reference = database().ref('/user/emp');
-const [userdata , setuserdata] = useState(null);
+
 const regions  = ["Odisha", "ER_1", "ER_2", "CC"]
 const substation  = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
 const Registration = () => {
   useEffect(()=>{
     getDatabase();
   },[]);
+  const [userdata , setuserdata] = useState(null);
  const getDatabase = async ()=>{
   try{
     const data = await database().ref("user/emp").once('value');
     console.log(data)
-    setuserdata(data.val())
+    setuserdata(data.val().age)
   }
   catch(err){
     console.log(err);
@@ -25,7 +26,7 @@ const Registration = () => {
   return (
    
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <Text>Registration</Text>
+      <Text>{userdata}</Text>
       <TextInput placeholder='Name' />
       <TextInput placeholder='Designation' />
       <SelectDropdown

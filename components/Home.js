@@ -38,17 +38,44 @@ const secIcons = [
 ]
 const HomeScreen = (props) => {
   return (
-    
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style= {{fontSize:26}}>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => props.navigation.navigate( 'Patrolling', {Patrolling})}
-      />
-      
+    <View style={styles.sectionContainer}>
+
+      <View style={[styles.portion1, { flex: 1 }]} >
+        <Text style={styles.logo}>  </Text>
+        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
+        <Text style={styles.logo}> </Text>
+      </View>
+      <View style={[styles.portion2, { flex: 3 }]}>
+
+        <Text style={{ fontSize: 26 }}>Home Screen</Text>
+        <TouchableHighlight>
+        <Image style={[styles.imageicon]} source={require('./image/power_grid_logo.png')} />
+          <Text style={styles.custombutton}
+            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Patolling</Text>
+        </TouchableHighlight>
+        <TouchableHighlight>
+          <Text style={styles.custombutton}
+            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Verifing</Text>
+        </TouchableHighlight>
+        <TouchableHighlight>
+          <Text style={styles.custombutton}
+            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Duty assigning</Text>
+        </TouchableHighlight>
+        <TouchableHighlight>
+          <Text style={styles.custombutton}
+            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Abnormality</Text>
+        </TouchableHighlight>
+        <TouchableHighlight>
+          <Text style={styles.custombutton}
+            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Action</Text>
+        </TouchableHighlight>
+      </View>
+      <View style={[styles.portion3, { flex: 1 }]}>
+
+      </View>
+
     </View>
-       
-     
+
   )
 }
 
@@ -67,26 +94,42 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height * 0.7,
     width: Dimensions.get("window").width,
   },
-  portion: {
+  portion1: {
     paddingHorizontal: 24,
     flexDirection: 'row',
-    textAlign: 'center',
-
-    padding: 10,
+    
+    
+    alignItems: 'center', 
+    justifyContent: 'center'
+    
   },
   portion2: {
     margin: 30,
-    flexDirection: 'column',
+    flexDirection: 'row',
+    flexWrap:'wrap',
     borderColor: 'red',
     borderWidth: 3,
     borderRadius: 20,
     padding: 10
   },
+  portion3: {
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    textAlign:'center',
+    alignItems: 'center', 
+    justifyContent: 'center'
+   
+   
+   
+    
+  },
 
   logo: {
     flex: 1,
     flexDirection: 'column',
-    height: 130, width: 250,
+    height:50, width: 30,
+    justifyContent:'center',
+    
 
   },
   text: {
@@ -102,7 +145,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     backgroundColor: 'white',
     fontSize: 15,
-    borderRadius: 3,
+    borderRadius: 8,
     marginHorizontal: 20,
     marginTop: 10
 
@@ -110,6 +153,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',
+    textAlign:'center'
   },
   sectionDescription: {
     marginTop: 8,
@@ -119,38 +163,29 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-});
+  custombutton:{
+    backgroundColor: 'pink',
+    borderWidth:2,
+    borderColor:'red',
+    borderRadius:8,
+    shadowColor:'pink',
+    color:'blue',
+    fontSize:20,
+    textAlign: 'center',
+    padding:5,
+    margin:20
+
+
+  },
+ iconimage :{
+    flex: 3,
+    flexDirection: 'column',
+    height:10, width: 10,
+    justifyContent:'center'
+    
+
+  }
+  
+})
 
 export default HomeScreen;
-const SecHome = ()=>{
-  return(
-  <View style={styles.sectionContainer}>
-      <View style={[styles.portion, { flex: 1 }]}>
-        <Text style={styles.logo}> </Text>
-        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
-        <Text style={styles.logo}> </Text>
-      </View>
-
-      <View style={[styles.portion2, { flex: 3 }]}>
-        <FlatList 
-        data={secIcons} 
-        renderItem={({item})=><TouchableHighlight style={{ flex: 1 }}  onPress={() => navigation.navigate('{(item.icon)}')}>
-         
-        <Text style={[styles.text]}>{(item.icon)}</Text>
-      </TouchableHighlight>}
-      />
-          
-
-       
-        <TouchableHighlight style={{ flex: 1 }}>
-          <Text style={[styles.text]}> login</Text>
-        </TouchableHighlight>
-      </View>
-
-      <View style={[styles.portion, { flex: 1 }]}>
-        <Text>Copy write @ Powergrid </Text>
-      </View>
-    </View>
-  )
-
-}

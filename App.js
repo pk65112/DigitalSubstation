@@ -46,7 +46,8 @@ const App = () => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerBackVisible: false
+          headerBackVisible: false,
+          
         }} />
         <Stack.Screen name="Registration" component={Registration} />
         <Stack.Screen name="Patrolling" component={Patrolling} />
