@@ -1,5 +1,5 @@
 import React from 'react';
-
+import GetLocation from 'react-native-get-location'
 import {
 
   StyleSheet,
@@ -13,23 +13,33 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 const stack = createNativeStackNavigator();
+
 const secIcons = [
   {
     id: 1,
-    icon: "spot-1"
+    description: "spot-1",
+    latitude:20.09268,
+    longitude:85.66895,
   },
   {
     id: 2,
-    icon: "Spot-2"
+    description: "Spot-2",
+    latitude:20.09268,
+    longitude:85.66895,
   },
   {
     id: 3,
-    icon: "Spot-3"
+    description: "Spot-3",
+    latitude:20.09268,
+    longitude:85.66895,
   },
   {
     id: 4,
-    icon: "Spot-4"
+    description: "Spot-4",
+    latitude:20.09268,
+    longitude:85.66895,
   }
 
 ]
@@ -109,7 +119,7 @@ const styles = StyleSheet.create({
 });
 
 export default Patrolling;
-const SecPatrolling = ()=>{
+const SecPatrolling = (props)=>{
   return(
   <View style={styles.sectionContainer}>
       <View style={[styles.portion, { flex: 1 }]}>
@@ -122,9 +132,9 @@ const SecPatrolling = ()=>{
         <FlatList 
         data={secIcons} 
         renderItem={({item})=>
-        <TouchableHighlight style={{ flex: 1 }}  onPress={() => navigation.navigate('{(item.icon)}')}>
+        <TouchableHighlight style={{ flex: 1 }}  onPress={() => navigation.navigate('{(item.description)}')}>
          
-        <Text style={[styles.text]}>{(item.icon)}</Text>
+        <Text style={[styles.text]}>{(item.description)}</Text>
       </TouchableHighlight>}
       />
           

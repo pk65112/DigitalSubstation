@@ -47,27 +47,21 @@ const HomeScreen = (props) => {
       </View>
       <View style={[styles.portion2, { flex: 3 }]}>
 
-        <Text style={{ fontSize: 26 }}>Home Screen</Text>
-        <TouchableHighlight>
-        <Image style={[styles.imageicon]} source={require('./image/power_grid_logo.png')} />
-          <Text style={styles.custombutton}
-            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Patolling</Text>
+        <TouchableHighlight activeOpacity={0.6} style = {styles.iconset}
+          onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>
+          <View  style={{alignItems:'center'}}>
+            <Image style={[styles.imageicon]} source={require('./image/securityPatrolling.png')} />
+            <Text style={styles.custombutton}
+            >Patolling</Text>
+          </View>
         </TouchableHighlight>
-        <TouchableHighlight>
-          <Text style={styles.custombutton}
-            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Verifing</Text>
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Text style={styles.custombutton}
-            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Duty assigning</Text>
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Text style={styles.custombutton}
-            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Abnormality</Text>
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Text style={styles.custombutton}
-            onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>Action</Text>
+        <TouchableHighlight activeOpacity={0.6} style = {styles.iconset}
+          onPress={() => props.navigation.navigate('Schedule', { Schedule})}>
+          <View  style={{alignItems:'center'}}>
+            <Image style={[styles.imageicon]} source={require('./image/shedule.png')} />
+            <Text style={styles.custombutton}
+            >Schedule</Text>
+          </View>
         </TouchableHighlight>
       </View>
       <View style={[styles.portion3, { flex: 1 }]}>
@@ -78,13 +72,6 @@ const HomeScreen = (props) => {
 
   )
 }
-
-
-
-
-
-
-
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -97,41 +84,40 @@ const styles = StyleSheet.create({
   portion1: {
     paddingHorizontal: 24,
     flexDirection: 'row',
-    
-    
-    alignItems: 'center', 
+
+
+    alignItems: 'center',
     justifyContent: 'center'
-    
+
   },
   portion2: {
     margin: 30,
     flexDirection: 'row',
-    flexWrap:'wrap',
-    borderColor: 'red',
-    borderWidth: 3,
-    borderRadius: 20,
-    padding: 10
+    flexWrap: 'wrap',
+   
+    
   },
   portion3: {
     paddingHorizontal: 24,
     flexDirection: 'row',
-    textAlign:'center',
-    alignItems: 'center', 
+    textAlign: 'center',
+    alignItems: 'center',
     justifyContent: 'center'
-   
-   
-   
-    
+
+
+
+
   },
 
   logo: {
     flex: 1,
     flexDirection: 'column',
-    height:50, width: 30,
-    justifyContent:'center',
-    
+    height: 50, width: 30,
+    justifyContent: 'center',
+
 
   },
+  
   text: {
     textAlign: 'center',
     color: 'blue',
@@ -153,7 +139,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',
-    textAlign:'center'
+    textAlign: 'center'
   },
   sectionDescription: {
     marginTop: 8,
@@ -163,29 +149,32 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-  custombutton:{
-    backgroundColor: 'pink',
-    borderWidth:2,
-    borderColor:'red',
-    borderRadius:8,
-    shadowColor:'pink',
-    color:'blue',
-    fontSize:20,
+  custombutton: {
+    borderColor: 'red',
+    color: 'blue',
+    fontSize: 15,
     textAlign: 'center',
-    padding:5,
-    margin:20
-
+  },
+  imageicon: {
+    height: 80, width: 50,
+    backgroundColor:'white'
 
   },
- iconimage :{
-    flex: 3,
+  icon: {
+    flex: 1,
     flexDirection: 'column',
-    height:10, width: 10,
-    justifyContent:'center'
-    
+    backgroundColor: 'blue'
+  },
+  iconset:{
+    alignItems:'center',
+    padding:5,
+    borderColor:'red',
+    borderRadius:10,
+    borderWidth:0.5,
+    margin:5,
+    backgroundColor:'white'
 
   }
-  
 })
 
 export default HomeScreen;
