@@ -1,55 +1,142 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GetLocation from 'react-native-get-location'
 import {
-
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Dimensions,
-  Image,
-  FlatList,
-  TouchableHighlight,
+  StyleSheet, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent,
 } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import database from '@react-native-firebase/database';
 const stack = createNativeStackNavigator();
 
-const secIcons = [
-  {
-    id: 1,
-    description: "spot-1",
-    latitude:20.09268,
-    longitude:85.66895,
-  },
-  {
-    id: 2,
-    description: "Spot-2",
-    latitude:20.09268,
-    longitude:85.66895,
-  },
-  {
-    id: 3,
-    description: "Spot-3",
-    latitude:20.09268,
-    longitude:85.66895,
-  },
-  {
-    id: 4,
-    description: "Spot-4",
-    latitude:20.09268,
-    longitude:85.66895,
-  }
+const reference = database().ref('/spots/pan');
 
-]
+
+
+
+
+
+
 const Patrolling = () => {
+  const [spotdata, setspotdata] = useState([]);
+  const [lati, setlati] = useState(null);
+  const [long, setlong] = useState(null);
+  GetLocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 60000,
+  })
+    .then(location => {
+
+      console.log(location);
+      setlati(location.longitude);
+      setlong(location.latitude);
+      console.log(lati);
+      console.log(long);
+    })
+    .catch(error => {
+      const { code, message } = error;
+      console.warn(code, message);
+    })
+
+    const getDatabase = async () => {
+      try {
+       
+        const data = await database().ref('/spots/pan').once('value');
+        console.log(data);
+        let fetchedData = data.toJSON();
+        setspotdata(fetchedData);
+        console.log(fetchedData);
+        showdata();
+          
+          
+          
+   
+         
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+    const showdata = async()=>{
+      try {
+        spotdata.length ? 
+          spotdata.map((item)=>{
+           <View>
+             <Text style={[styles.text]}> {item.id}</Text>
+   
+             </View>
+          }): null
+      } catch (error) {
+        
+      }
+    }
+
   return (
-    <SecPatrolling/>
+    <View style={styles.sectionContainer}>
+      <View style={[styles.portion, { flex: 1 }]}>
+        <Text style={styles.logo}> </Text>
+        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
+        <Text style={styles.logo}> </Text>
+      </View>
+
+      <View style={[styles.portion2, { flex: 3 }]}>
+
+      <TouchableHighlight style={{ flex: 1 }} onPress={() =>getDatabase()}>
+
+<Text style={[styles.text]}>Get Spot</Text>
+</TouchableHighlight>
+     
+
+
+
+
+
+      
+
+       
+      </View>
+
+      <View style={[styles.portion, { flex: 1 }]}>
+        <Text>Copy write @ Powergrid </Text>
+      </View>
+    </View>
   )
 }
 
+const SecPatrolling = (props) => {
+  return (
+    <View style={styles.sectionContainer}>
+      <View style={[styles.portion, { flex: 1 }]}>
+        <Text style={styles.logo}> </Text>
+        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
+        <Text style={styles.logo}> </Text>
+      </View>
 
+      <View style={[styles.portion2, { flex: 3 }]}>
+        <FlatList
+          data={secIcons}
+          renderItem={({ item }) =>
+
+
+            <TouchableHighlight style={{ flex: 1 }} onPress={() => navigation.navigate('{(item.description)}')}>
+
+              <Text style={[styles.text]}>{(item.description)}</Text>
+            </TouchableHighlight>}
+        />
+
+
+        <TouchableHighlight style={{ flex: 1 }}>
+          <Text style={[styles.text]}> login</Text>
+        </TouchableHighlight>
+      </View>
+
+      <View style={[styles.portion, { flex: 1 }]}>
+        <Text>Copy write @ Powergrid </Text>
+      </View>
+    </View>
+  )
+
+}
 
 
 
@@ -119,34 +206,3 @@ const styles = StyleSheet.create({
 });
 
 export default Patrolling;
-const SecPatrolling = (props)=>{
-  return(
-  <View style={styles.sectionContainer}>
-      <View style={[styles.portion, { flex: 1 }]}>
-        <Text style={styles.logo}> </Text>
-        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
-        <Text style={styles.logo}> </Text>
-      </View>
-
-      <View style={[styles.portion2, { flex: 3 }]}>
-        <FlatList 
-        data={secIcons} 
-        renderItem={({item})=>
-        <TouchableHighlight style={{ flex: 1 }}  onPress={() => navigation.navigate('{(item.description)}')}>
-         
-        <Text style={[styles.text]}>{(item.description)}</Text>
-      </TouchableHighlight>}
-      />
-          
-        <TouchableHighlight style={{ flex: 1 }}>
-          <Text style={[styles.text]}> login</Text>
-        </TouchableHighlight>
-      </View>
-
-      <View style={[styles.portion, { flex: 1 }]}>
-        <Text>Copy write @ Powergrid </Text>
-      </View>
-    </View>
-  )
-
-}
