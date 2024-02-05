@@ -11,12 +11,6 @@ const stack = createNativeStackNavigator();
 
 const reference = database().ref('/spots/pan');
 
-
-
-
-
-
-
 const Patrolling = () => {
   const [spotdata, setspotdata] = useState([]);
   const [lati, setlati] = useState(null);
@@ -30,80 +24,65 @@ const Patrolling = () => {
       console.log(location);
       setlati(location.longitude);
       setlong(location.latitude);
-      console.log(lati);
-      console.log(long);
+      // console.log(lati);
+      // console.log(long);
     })
     .catch(error => {
       const { code, message } = error;
       console.warn(code, message);
     })
 
-    const getDatabase = async () => {
-      try {
-       
-        const data = await database().ref('/spots/pan').once('value');
-        console.log(data);
-        let fetchedData = data.toJSON();
-        setspotdata(fetchedData);
-        console.log(fetchedData);
-        showdata();
+  useEffect(() => {
+    getDatabase();
+  }, []);
+
+  const getDatabase = async () => {
+    try {
+
+       await database().ref('/spots/pan').once('value' , snapshot => {
+        let data = [];
+        snapshot.forEach((child)=>{
+            console.log(child.val().latitude)
+          if(child.val().latitude>=37){
+            data.push(child.val());
+          console.log(data);
+          setspotdata(data)
+
+          }
           
-          
-          
-   
-         
-      }
-      catch (err) {
-        console.log(err);
-      }
-    }
-    const showdata = async()=>{
-      try {
-        spotdata.length ? 
-          spotdata.map((item)=>{
-           <View>
-             <Text style={[styles.text]}> {item.id}</Text>
-   
-             </View>
-          }): null
-      } catch (error) {
+        })
         
-      }
-    }
-
-  return (
-    <View style={styles.sectionContainer}>
-      <View style={[styles.portion, { flex: 1 }]}>
-        <Text style={styles.logo}> </Text>
-        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
-        <Text style={styles.logo}> </Text>
-      </View>
-
-      <View style={[styles.portion2, { flex: 3 }]}>
-
-      <TouchableHighlight style={{ flex: 1 }} onPress={() =>getDatabase()}>
-
-<Text style={[styles.text]}>Get Spot</Text>
-</TouchableHighlight>
-     
-
-
-
-
-
+      });
       
+      // console.log(spotdata);
+      
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+  const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item'
+    },
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item'
+    },
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item'
+    },
+  ];
 
-       
-      </View>
-
-      <View style={[styles.portion, { flex: 1 }]}>
-        <Text>Copy write @ Powergrid </Text>
-      </View>
+  
+  const Item = ({title}) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
     </View>
-  )
-}
+  );
 
-const SecPatrolling = (props) => {
   return (
     <View style={styles.sectionContainer}>
       <View style={[styles.portion, { flex: 1 }]}>
@@ -113,21 +92,32 @@ const SecPatrolling = (props) => {
       </View>
 
       <View style={[styles.portion2, { flex: 3 }]}>
-        <FlatList
-          data={secIcons}
-          renderItem={({ item }) =>
 
+      <FlatList
+        data={spotdata}
+        renderItem={Item => {
+          console.log('renderItem',Item)
+          
+          return(
+            <Text>{Item.item.description}</Text>
+          )
+          
+        }}
+        keyExtractor={item => item.id}
+       
+      />
 
-            <TouchableHighlight style={{ flex: 1 }} onPress={() => navigation.navigate('{(item.description)}')}>
+        
+           
+           
+             
+            
+            
+           
+           
+            
+  
 
-              <Text style={[styles.text]}>{(item.description)}</Text>
-            </TouchableHighlight>}
-        />
-
-
-        <TouchableHighlight style={{ flex: 1 }}>
-          <Text style={[styles.text]}> login</Text>
-        </TouchableHighlight>
       </View>
 
       <View style={[styles.portion, { flex: 1 }]}>
@@ -135,8 +125,22 @@ const SecPatrolling = (props) => {
       </View>
     </View>
   )
-
 }
+
+const RenderSpot = (props) => {
+  return (
+    <View>
+      <FlatList
+        data={props.name}
+        renderItem={item => {
+          console.log('detected', item)
+        }}
+      />
+      <Text>{props.name}</Text>
+    </View>
+  )
+}
+
 
 
 
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
   logo: {
     flex: 1,
     flexDirection: 'column',
-    height: 130, width: 250,
+    height: 50, width: 40,
 
   },
   text: {
@@ -202,6 +206,15 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
   },
 });
 
