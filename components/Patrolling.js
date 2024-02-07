@@ -1,41 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import GetLocation from 'react-native-get-location'
 import {
-  StyleSheet, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent,
+  StyleSheet, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
 } from 'react-native';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import database from '@react-native-firebase/database';
+import Observations from './Observations';
+
 const stack = createNativeStackNavigator();
 
 const reference = database().ref('/spots/pan');
 
-const Patrolling = () => {
+const Patrolling = (props) => {
   const [spotdata, setspotdata] = useState([]);
   const [lati, setlati] = useState(null);
   const [long, setlong] = useState(null);
-  GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 60000,
-  })
-    .then(location => {
-
-      console.log(location);
-      setlati(location.longitude);
-      setlong(location.latitude);
-      // console.log(lati);
-      // console.log(long);
-    })
-    .catch(error => {
-      const { code, message } = error;
-      console.warn(code, message);
-    })
+  const[refresh,setRefresh] = useState(0)
 
   useEffect(() => {
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 6000,
+    })
+      .then(location => {
+  
+        console.log(location);
+        setlati(location.latitude);
+        setlong(location.longitude);
+        console.log( 'loaded',lati);
+        // console.log(long);
+      })
+      .catch(error => {
+        const { code, message } = error;
+        console.warn(code, message);
+      })
+   
+    
+  },[refresh]);
+  useEffect(()=>{
     getDatabase();
-  }, []);
-
+  },[])
+  
   const getDatabase = async () => {
     try {
 
@@ -43,7 +49,10 @@ const Patrolling = () => {
         let data = [];
         snapshot.forEach((child)=>{
             console.log(child.val().latitude)
-          if(child.val().latitude>=37){
+            console.log( 'result',lati);
+          if(lati+0.00090>=child.val().latitude && child.val().latitude  >= lati-0.00090){
+            if(long+0.00090>=child.val().longitude && child.val().longitude  >= long-0.00090){
+            }
             data.push(child.val());
           console.log(data);
           setspotdata(data)
@@ -61,20 +70,7 @@ const Patrolling = () => {
       console.log(err);
     }
   }
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item'
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item'
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item'
-    },
-  ];
+ 
 
   
   const Item = ({title}) => (
@@ -99,7 +95,11 @@ const Patrolling = () => {
           console.log('renderItem',Item)
           
           return(
+            <View>
+           < TouchableHighlight onPress={() => props.navigation.navigate('Observations', { Observations })}>
             <Text>{Item.item.description}</Text>
+            </TouchableHighlight>
+            </View>
           )
           
         }}
@@ -107,7 +107,7 @@ const Patrolling = () => {
        
       />
 
-        
+       <Button title= 'refresh'  onPress={()=>setRefresh(2)}/> 
            
            
              

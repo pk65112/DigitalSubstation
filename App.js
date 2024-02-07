@@ -26,6 +26,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Registration from './components/Registration';
 import Home from './components/Home';
 import Patrolling from './components/Patrolling';
+import Observations from './components/Observations';
+
 
 
 
@@ -51,6 +53,7 @@ const App = () => {
         }} />
         <Stack.Screen name="Registration" component={Registration} />
         <Stack.Screen name="Patrolling" component={Patrolling} />
+        <Stack.Screen name="Observations" component={Observations} />
 
       </Stack.Navigator>
     </NavigationContainer>
