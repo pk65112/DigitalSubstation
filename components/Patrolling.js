@@ -40,7 +40,7 @@ const Patrolling = (props) => {
   },[refresh]);
   useEffect(()=>{
     getDatabase();
-  },[])
+  },[refresh])
   
   const getDatabase = async () => {
     try {
@@ -50,12 +50,13 @@ const Patrolling = (props) => {
         snapshot.forEach((child)=>{
             console.log(child.val().latitude)
             console.log( 'result',lati);
-          if(lati+0.00090>=child.val().latitude && child.val().latitude  >= lati-0.00090){
-            if(long+0.00090>=child.val().longitude && child.val().longitude  >= long-0.00090){
-            }
-            data.push(child.val());
+          if(lati+0.00010>=child.val().latitude && child.val().latitude  >= lati-0.00010){
+            if(long+0.00010>=child.val().longitude && child.val().longitude  >= long-0.00010){
+              data.push(child.val());
           console.log(data);
           setspotdata(data)
+            }
+            
 
           }
           

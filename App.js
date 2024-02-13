@@ -27,6 +27,7 @@ import Registration from './components/Registration';
 import Home from './components/Home';
 import Patrolling from './components/Patrolling';
 import Observations from './components/Observations';
+import Dropdown from './components/Dropdown';
 
 
 
@@ -54,6 +55,7 @@ const App = () => {
         <Stack.Screen name="Registration" component={Registration} />
         <Stack.Screen name="Patrolling" component={Patrolling} />
         <Stack.Screen name="Observations" component={Observations} />
+        <Stack.Screen name="Dropdown" component={Dropdown} />
 
       </Stack.Navigator>
     </NavigationContainer>
@@ -85,6 +87,10 @@ const Login = (props) => {
       <TouchableHighlight>
           <Text style={styles.custombutton}
           onPress={() => props.navigation.navigate('Registration', { Registration })}>Go for Registration</Text>
+        </TouchableHighlight>
+        <TouchableHighlight>
+          <Text style={styles.custombutton}
+          onPress={() => props.navigation.navigate('Dropdown', { Dropdown })}>Go for Registration</Text>
         </TouchableHighlight>
       
       </View>

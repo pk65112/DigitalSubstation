@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, Text, View, Button, TextInput,TouchableHighlight, StyleSheet, Dimensions } from 'react-native';
+import { FlatList, Image,KeyboardAvoidingView, Text, View, Button, TextInput,TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
+import Dropdown from './Dropdown';
 
+
+ 
 const reference = database().ref('/user/emp');
 
 const regions  = ["Odisha", "ER_1", "ER_2", "CC"]
-const substation  = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const substations  = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const designations =["Executive", "NonExecutive", "AMC security"]
 const Registration = () => {
   useEffect(()=>{
     getDatabase();
@@ -19,7 +23,17 @@ const Registration = () => {
   const [substation,setsubstation]=useState(null);
   const [unit,setunit]=useState(null);
   
+ function getRegion(sltddata){
+  setregion(sltddata);
+ }
+ function getsubstation(sltddata){
+  setsubstation(sltddata);
+ }
+ function getsubstation(sltddata){
+  setdesignation(sltddata);
+ }
 
+  
  const getDatabase = async ()=>{
   try{
     const data = await database().ref("user/emp").once('value');
@@ -47,50 +61,46 @@ const Registration = () => {
   }
  }
   return (
-   
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <Text>{userdata}</Text>
-      <TextInput placeholder='Name' onChangeText={(value)=>setname(value)}/>
-      <TextInput placeholder='Designation' onChangeText={(value)=>setdesignation(value)} />
-      <SelectDropdown
-        data={regions}
-        defaultButtonText={"Select Region"}
-        onSelect={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }}
-         />
-        <SelectDropdown
-        data={substation}
-        defaultButtonText={"Select Substation"}
-        onSelect={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }} />
+    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <View >
+      <ScrollView>
+       <View style={[styles.portion1, { flex: 1 }]} >
+        <Text style={styles.logo}>  </Text>
+        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
+        <Text style={styles.logo}> </Text>
+      </View>
+      
+      <View style={[styles.portion2, { flex: 5 }]}>
+        
+      <Text style={styles.text}>Registration</Text>
+      <TextInput style ={styles.txtinput} placeholder='Name' onChangeText={(value)=>setname(value)}/>
+      <TextInput style ={styles.txtinput} placeholder='Designation' onChangeText={(value)=>setdesignation(value)} />
+      <Dropdown data= {regions} rtndata ={getRegion}/>
+      <Dropdown data= {substations} rtndata ={getsubstation}/>
+      <Dropdown data= {designations} rtndata ={getsubstation}/>
+      
+      
+       
+         <TextInput style ={styles.txtinput} placeholder='place of posting' />
+      <TextInput style ={styles.txtinput} placeholder='password' />
+      <TextInput style ={styles.txtinput} placeholder='confirm password' />
          <TouchableHighlight>
           <Text style={styles.custombutton}
           onPress={() => saveData ()}>submit</Text>
         </TouchableHighlight>
             
-      <TextInput placeholder='place of posting' />
-
-
+     
+      
+      </View>
+      </ScrollView>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 
 export default Registration;
 const styles = StyleSheet.create({
+  
   sectionContainer: {
     backgroundColor: 'rgba(250, 250, 246, 0.959)',
 
@@ -147,10 +157,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     backgroundColor: 'white',
-    fontSize: 15,
-    borderRadius: 8,
+    fontSize:13,
+
+    borderRadius: 5,
+    padding :0,
     marginHorizontal: 20,
-    marginTop: 10
+    marginTop:8,
+    height:Dimensions.get("window").height*0.05
+
 
   },
   sectionTitle: {
@@ -177,10 +191,41 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding:5,
     margin:20
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  dropdown1BtnStyle: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  dropdown1BtnTxtStyle: {color: '#444', textAlign: 'left'},
+  dropdown1DropdownStyle: {backgroundColor: '#EFEFEF'},
+  dropdown1RowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
+  dropdown1RowTxtStyle: {color: '#444', textAlign: 'left'},
 
-
-  }
 })
-
-
-
