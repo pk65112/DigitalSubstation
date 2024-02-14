@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
 
 import {
 
@@ -37,6 +38,27 @@ const secIcons = [
 
 ]
 const HomeScreen = (props) => {
+  useEffect(()=>{
+    getDatabase();
+  },[]);
+  const [userdata , setuserdata] = useState(null);
+  const [name,setname]=useState(null);
+  const [designation,setdesignation]=useState(null);
+  const [region,setregion]=useState(null);
+  const [substation,setsubstation]=useState(null);
+  const [unit,setunit]=useState(null);
+  
+
+ const getDatabase = async ()=>{
+  try{
+    const data = await database().ref("user/emp").once('value');
+    console.log(data)
+    setuserdata(data.val().age)
+  }
+  catch(err){
+    console.log(err);
+  }
+ }
   return (
     <View style={styles.sectionContainer}>
 
@@ -59,8 +81,7 @@ const HomeScreen = (props) => {
           onPress={() => props.navigation.navigate('Schedule', { Schedule})}>
           <View  style={{alignItems:'center'}}>
             <Image style={[styles.imageicon]} source={require('./image/shedule.png')} />
-            <Text style={styles.custombutton}
-            >Schedule</Text>
+            <Text style={styles.custombutton} >Schedule</Text>
           </View>
         </TouchableHighlight>
       </View>

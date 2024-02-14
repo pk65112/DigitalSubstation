@@ -16,7 +16,7 @@ const Patrolling = (props) => {
   const [spotdata, setspotdata] = useState([]);
   const [lati, setlati] = useState(null);
   const [long, setlong] = useState(null);
-  const[refresh,setRefresh] = useState(0)
+  const [refresh, setRefresh] = useState(0)
 
   useEffect(() => {
     GetLocation.getCurrentPosition({
@@ -24,56 +24,57 @@ const Patrolling = (props) => {
       timeout: 6000,
     })
       .then(location => {
-  
+
         console.log(location);
         setlati(location.latitude);
         setlong(location.longitude);
-        console.log( 'loaded',lati);
+        console.log('loaded', lati);
         // console.log(long);
       })
       .catch(error => {
         const { code, message } = error;
         console.warn(code, message);
       })
-   
-    
-  },[refresh]);
-  useEffect(()=>{
+
+
+  }, [refresh]);
+  useEffect(() => {
     getDatabase();
-  },[])
-  
+  }, [refresh])
+
   const getDatabase = async () => {
     try {
 
-       await database().ref('/spots/pan').once('value' , snapshot => {
+      await database().ref('/spots/pan').once('value', snapshot => {
         let data = [];
-        snapshot.forEach((child)=>{
-            console.log(child.val().latitude)
-            console.log( 'result',lati);
-          if(lati+0.00090>=child.val().latitude && child.val().latitude  >= lati-0.00090){
-            if(long+0.00090>=child.val().longitude && child.val().longitude  >= long-0.00090){
+        snapshot.forEach((child) => {
+          console.log(child.val().latitude)
+          console.log('result', lati);
+          if (lati + 0.00020 >= child.val().latitude && child.val().latitude >= lati - 0.00020) {
+            if (long + 0.00020 >= child.val().longitude && child.val().longitude >= long - 0.00020) {
+              data.push(child.val());
+              console.log(data);
+              setspotdata(data)
             }
-            data.push(child.val());
-          console.log(data);
-          setspotdata(data)
+
 
           }
-          
+
         })
-        
+
       });
-      
+
       // console.log(spotdata);
-      
+
     }
     catch (err) {
       console.log(err);
     }
   }
- 
 
-  
-  const Item = ({title}) => (
+
+
+  const Item = ({ title }) => (
     <View style={styles.item}>
       <Text style={styles.title}>{title}</Text>
     </View>
@@ -89,34 +90,34 @@ const Patrolling = (props) => {
 
       <View style={[styles.portion2, { flex: 3 }]}>
 
-      <FlatList
-        data={spotdata}
-        renderItem={Item => {
-          console.log('renderItem',Item)
-          
-          return(
-            <View>
-           < TouchableHighlight onPress={() => props.navigation.navigate('Observations', { Observations })}>
-            <Text>{Item.item.description}</Text>
-            </TouchableHighlight>
-            </View>
-          )
-          
-        }}
-        keyExtractor={item => item.id}
-       
-      />
+        <FlatList
+          data={spotdata}
+          renderItem={Item => {
+            console.log('renderItem', Item)
 
-       <Button title= 'refresh'  onPress={()=>setRefresh(2)}/> 
-           
-           
-             
-            
-            
-           
-           
-            
-  
+            return (
+              <View>
+                < TouchableHighlight onPress={() => props.navigation.navigate('Observations', { Observations })}>
+                  <Text>{Item.item.description}</Text>
+                </TouchableHighlight>
+              </View>
+            )
+
+          }}
+          keyExtractor={item => item.id}
+
+        />
+
+        <Button title='refresh' onPress={() => setRefresh(2)} />
+
+
+
+
+
+
+
+
+
 
       </View>
 
