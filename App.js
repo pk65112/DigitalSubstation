@@ -27,9 +27,7 @@ import Registration from './components/Registration';
 import Home from './components/Home';
 import Patrolling from './components/Patrolling';
 import Observations from './components/Observations';
-import database from '@react-native-firebase/database';
-
-
+import Dropdown from './components/Dropdown';
 
 
 
@@ -58,7 +56,6 @@ const App = () => {
         <Stack.Screen name="Patrolling" component={Patrolling} />
         <Stack.Screen name="Observations" component={Observations} />
         <Stack.Screen name="Dropdown" component={Dropdown} />
-        
 
       </Stack.Navigator>
     </NavigationContainer>
@@ -95,6 +92,7 @@ const Login = (props) => {
           <Text style={styles.custombutton}
           onPress={() => props.navigation.navigate('Dropdown', { Dropdown })}>Go for Registration</Text>
         </TouchableHighlight>
+      
       </View>
     </View>
   )

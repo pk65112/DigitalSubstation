@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, Text, View, Button, TextInput,TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { FlatList, Image,KeyboardAvoidingView, Text, View, Button, TextInput,TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 import Dropdown from './Dropdown';
-
 
 
  
 const reference = database().ref('/user/emp');
 
 const regions  = ["Odisha", "ER_1", "ER_2", "CC"]
-const substation  = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const substations  = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const designations =["Executive", "NonExecutive", "AMC security"]
 const Registration = () => {
   useEffect(()=>{
     getDatabase();
@@ -23,6 +23,16 @@ const Registration = () => {
   const [substation,setsubstation]=useState(null);
   const [unit,setunit]=useState(null);
   
+ function getRegion(sltddata){
+  setregion(sltddata);
+ }
+ function getsubstation(sltddata){
+  setsubstation(sltddata);
+ }
+ function getsubstation(sltddata){
+  setdesignation(sltddata);
+ }
+
   
  const getDatabase = async ()=>{
   try{
@@ -51,67 +61,26 @@ const Registration = () => {
   }
  }
   return (
-   
-    <View style={styles.sectionContainer}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <View >
+      <ScrollView>
        <View style={[styles.portion1, { flex: 1 }]} >
         <Text style={styles.logo}>  </Text>
         <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
         <Text style={styles.logo}> </Text>
       </View>
-      <Dropdown data= {regions}/>
-      <View style={[styles.portion2, { flex: 3 }]}>
-        <ScrollView>
+      
+      <View style={[styles.portion2, { flex: 5 }]}>
+        
       <Text style={styles.text}>Registration</Text>
       <TextInput style ={styles.txtinput} placeholder='Name' onChangeText={(value)=>setname(value)}/>
       <TextInput style ={styles.txtinput} placeholder='Designation' onChangeText={(value)=>setdesignation(value)} />
+      <Dropdown data= {regions} rtndata ={getRegion}/>
+      <Dropdown data= {substations} rtndata ={getsubstation}/>
+      <Dropdown data= {designations} rtndata ={getsubstation}/>
       
-      <SelectDropdown
-            data={region}
-            // defaultValueByIndex={1}
-            // defaultValue={'Egypt'}
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
-            }}
-            defaultButtonText={'Select country'}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              return selectedItem;
-            }}
-            rowTextForSelection={(item, index) => {
-              return item;
-            }}
-            buttonStyle={styles.dropdown1BtnStyle}
-            buttonTextStyle={styles.dropdown1BtnTxtStyle}
-            
-            dropdownIconPosition={'right'}
-            dropdownStyle={styles.dropdown1DropdownStyle}
-            rowStyle={styles.dropdown1RowStyle}
-            rowTextStyle={styles.dropdown1RowTxtStyle}
-          />
-      <SelectDropdown style ={styles.txtinput}
-        data={regions}
-        defaultButtonText={"Select Region"}
-        onSelect={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }}
-         />
-        <SelectDropdown style ={styles.txtinput}
-        data={substation}
-        defaultButtonText={"Select Substation"}
-        onSelect={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }} />
+      
+       
          <TextInput style ={styles.txtinput} placeholder='place of posting' />
       <TextInput style ={styles.txtinput} placeholder='password' />
       <TextInput style ={styles.txtinput} placeholder='confirm password' />
@@ -121,13 +90,11 @@ const Registration = () => {
         </TouchableHighlight>
             
      
+      
+      </View>
       </ScrollView>
-      </View>
-      <View style={[styles.portion3, { flex: 1 }]}>
-
-      </View>
-
     </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -262,6 +229,3 @@ const styles = StyleSheet.create({
   dropdown1RowTxtStyle: {color: '#444', textAlign: 'left'},
 
 })
-
-
-
