@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GetLocation from 'react-native-get-location'
 import {
-  StyleSheet, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
+  StyleSheet, ActivityIndicator, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,65 +16,70 @@ const Patrolling = (props) => {
   const [spotdata, setspotdata] = useState([]);
   const [lati, setlati] = useState(null);
   const [long, setlong] = useState(null);
-  const[refresh,setRefresh] = useState(0)
-
+  const [refresh, setRefresh] = useState(0);
+  const [show, setshow] = useState(false);
+  const displayLoader = () => {
+   
+    
+    
+  }
   useEffect(() => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 6000,
     })
       .then(location => {
-  
+
         console.log(location);
         setlati(location.latitude);
         setlong(location.longitude);
-        console.log( 'loaded',lati);
+        console.log('loaded', lati);
         // console.log(long);
       })
       .catch(error => {
         const { code, message } = error;
         console.warn(code, message);
       })
-   
-    
-  },[refresh]);
-  useEffect(()=>{
+
+
+  }, [refresh]);
+  useEffect(() => {
     getDatabase();
-  },[refresh])
-  
+  }, [refresh]);
+
   const getDatabase = async () => {
     try {
-
-       await database().ref('/spots/pan').once('value' , snapshot => {
+      setshow(true)
+      await database().ref('/spots/pan').once('value', snapshot => {
         let data = [];
-        snapshot.forEach((child)=>{
-            console.log(child.val().latitude)
-            console.log( 'result',lati);
-          if(lati+0.00010>=child.val().latitude && child.val().latitude  >= lati-0.00010){
-            if(long+0.00010>=child.val().longitude && child.val().longitude  >= long-0.00010){
+        snapshot.forEach((child) => {
+          console.log(child.val().latitude)
+          console.log('result', lati);
+          if (lati + 0.00010 >= child.val().latitude && child.val().latitude >= lati - 0.00010) {
+            if (long + 0.00010 >= child.val().longitude && child.val().longitude >= long - 0.00010) {
               data.push(child.val());
-          console.log(data);
-          setspotdata(data)
+              console.log(data);
+              setspotdata(data)
             }
-            
+
 
           }
-          
+
         })
-        
-      });
-      
+
+      }).then(() => setshow(false));
+
       // console.log(spotdata);
-      
+
     }
     catch (err) {
       console.log(err);
     }
   }
- 
 
-  
-  const Item = ({title}) => (
+
+
+  const Item = ({ title }) => (
     <View style={styles.item}>
       <Text style={styles.title}>{title}</Text>
     </View>
@@ -89,35 +94,35 @@ const Patrolling = (props) => {
       </View>
 
       <View style={[styles.portion2, { flex: 3 }]}>
+        
+        <FlatList
+          data={spotdata}
+          renderItem={Item => {
+            console.log('renderItem', Item)
 
-      <FlatList
-        data={spotdata}
-        renderItem={Item => {
-          console.log('renderItem',Item)
-          
-          return(
-            <View>
-           < TouchableHighlight onPress={() => props.navigation.navigate('Observations', { Observations })}>
-            <Text>{Item.item.description}</Text>
-            </TouchableHighlight>
-            </View>
-          )
-          
-        }}
-        keyExtractor={item => item.id}
-       
-      />
+            return (
+              <View>
+                < TouchableHighlight onPress={() => props.navigation.navigate('Observations', { Observations })}>
+                  <Text>{Item.item.description}</Text>
+                </TouchableHighlight>
+              </View>
+            )
 
-       <Button title= 'refresh'  onPress={()=>setRefresh(2)}/> 
-           
-           
-             
-            
-            
-           
-           
-            
-  
+          }}
+          keyExtractor={item => item.id}
+
+        />
+        <ActivityIndicator size={'large'} color={'blue'} animating={show} />
+        <Button title='refresh' onPress={()=>setRefresh(2)} />
+
+
+
+
+
+
+
+
+
 
       </View>
 

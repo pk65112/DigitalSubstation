@@ -1,71 +1,140 @@
 import React, { useEffect, useState } from 'react';
-import GetLocation from 'react-native-get-location'
+
+import { FlatList, Image, KeyboardAvoidingView, Text, View, Button, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
-import {
-  StyleSheet, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
-} from 'react-native';
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import database from '@react-native-firebase/database';
-const stack = createNativeStackNavigator();
+import Dropdown from './Dropdown';
 
+
+
+const reference = database().ref('/user/emp');
+
+const statuss = ["Normal", "Volunerable", "critical"]
+const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const designations = ["Executive", "NonExecutive", "AMC security"]
 const Observations = () => {
-  const status  = ["Normal", "Volunerable", "Critical"];
+  useEffect(() => {
+    console.log(database.ServerValue.TIMESTAMP)
+    
+    getDatabase();
+  }, []);
+  const [userdata, setuserdata] = useState(null);
+  const [name, setname] = useState('spot');
+  const [securityname, setSecurityname] = useState('User');
+  const [observation, setObservation] = useState(null);
+  const [status, setstatus] = useState(null);
+  const [substation, setsubstation] = useState(null);
+  const [unit, setunit] = useState(null);
+  const [emp, setemp] = useState(null);
+  const [password, setpassword] = useState(null);
+  const [cnfPassword, setCnfPassword] = useState(null);
+  const [placeOfPosting, setPlaceOfPosting] = useState(null);
+
+  function getStatus(sltddata) {
+    setstatus(sltddata);
+  }
+  function getsubstation(sltddata) {
+    setsubstation(sltddata);
+  }
+  function getdesignation(sltddata) {
+    setdesignation(sltddata);
+  }
+
+
+  const getDatabase = async () => {
+    try {
+      const data = await database().ref("user/emp").once('value');
+      console.log(data)
+      setuserdata(data.val().age)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+  const saveData = async () => {
+    if (observation.trim()) {
+      try {
+        const response = await database()
+          .ref('/users/' + emp)
+          .set({
+            date:new Date().toLocaleString(),
+            name: name,
+            designation: designation,
+            emp: emp,
+            region: region,
+            substation: substation,
+            placeOfPosting: placeOfPosting,
+            unit: unit,
+            password: password
+
+          })
+          .then(() => {
+            console.warn('Thank you... Registration successful');
+            setname(null);
+            setdesignation(null);
+            setemp(null);
+
+            setsubstation(null);
+            setPlaceOfPosting(null);
+            setunit(null);
+            setCnfPassword(null);
+            setpassword(null);
+
+          });
+      } catch (error) {
+        console.log(error);
+      }
+
+    }
+    else {
+      console.warn("please enter observations ")
+    }
+
+  }
   return (
-    <View style={styles.sectionContainer}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <View >
+        <ScrollView>
+          <View style={[styles.portion1, { flex: 1 }]} >
+            <Text style={styles.logo}>  </Text>
+            <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
+            <Text style={styles.logo}> </Text>
+          </View>
 
-      <View style={[styles.portion1, { flex: 1 }]} >
-        <Text style={styles.logo}>  </Text>
-        <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
-        <Text style={styles.logo}> </Text>
-      </View>
-      <View style={[styles.portion2, { flex: 3 }]}>
-        <View style={{ flex: 1 }}>
+          <View style={[styles.portion2, { flex: 5 }]}>
 
-          <Text>Take Photo</Text>
-
-        </View>
-        <View style={{ flex: 2 }}>
+            <Text style={styles.text}>Observations</Text>
+            <Text style={styles.txtinput}>{name}</Text>
+            {/* <Text style={styles.txtinput}>{securityname}</Text> */}
+            <TextInput style={styles.txtinput} value={securityname} onChangeText={(value) => setSecurityname(value)} />
+            <Text style={{ fontStyle: 'italic', color: 'blackS' }}>{'Select condition :'}</Text>
+            <Dropdown data={statuss} rtndata={getStatus} />
 
 
-          <Text>Spot Name</Text>
-          <Text>Security Name</Text>
-          <SelectDropdown
-        data={status}
-        defaultButtonText={"Select status"}
-        onSelect={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }}
-         />
-         
-          <TextInput
-          placeholder='Observations'
+            <TextInput style={ [styles.txtinput ,{height:100, textAlignVertical: 'top'}]} 
             multiline={true}
-            numberOfLines={10}
-            style={{ height: 70, textAlignVertical: 'top',borderWidth:2,width:Dimensions.get("window").width*0.9 }} />
+              numberOfLines={4} 
+              placeholder='Observation:-'
+              
+              onChangeText={(value) => setObservation(value)} />
+
+            <TouchableHighlight>
+              <Text style={styles.custombutton}
+                onPress={() => saveData()}>submit</Text>
+            </TouchableHighlight>
 
 
-        </View>
+
+          </View>
+        </ScrollView>
       </View>
-      <View style={[styles.portion3, { flex: 1 }]}>
-        <TouchableHighlight>
-          <Text>submit</Text>
-        </TouchableHighlight>
-      </View>
-
-    </View>
-
-  )
+    </KeyboardAvoidingView>
+  );
 }
 
+export default Observations;
 const styles = StyleSheet.create({
+
   sectionContainer: {
     backgroundColor: 'rgba(250, 250, 246, 0.959)',
 
@@ -85,17 +154,17 @@ const styles = StyleSheet.create({
   portion2: {
     margin: 30,
     flexDirection: 'column',
-    flexWrap: 'wrap',
-
-
+    borderColor: 'red',
+    borderWidth: 3,
+    borderRadius: 20,
+    padding: 10
   },
   portion3: {
     paddingHorizontal: 24,
-    flexDirection: 'column',
+    flexDirection: 'row',
     textAlign: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2
+    justifyContent: 'center'
 
 
 
@@ -110,7 +179,6 @@ const styles = StyleSheet.create({
 
 
   },
-
   text: {
     textAlign: 'center',
     color: 'blue',
@@ -123,10 +191,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     backgroundColor: 'white',
-    fontSize: 15,
-    borderRadius: 8,
+    fontSize: 13,
+
+    borderRadius: 5,
+    padding: 0,
     marginHorizontal: 20,
-    marginTop: 10
+    marginTop: 8,
+    height: Dimensions.get("window").height * 0.05
+
 
   },
   sectionTitle: {
@@ -143,32 +215,52 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   custombutton: {
+    backgroundColor: 'pink',
+    borderWidth: 2,
     borderColor: 'red',
+    borderRadius: 8,
+    shadowColor: 'pink',
     color: 'blue',
-    fontSize: 15,
+    fontSize: 20,
     textAlign: 'center',
+    padding: 5,
+    margin: 20
   },
-  imageicon: {
-    height: 80, width: 50,
-    backgroundColor: 'white'
-
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
   },
   icon: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'blue'
+    marginRight: 5,
   },
-  iconset: {
-    alignItems: 'center',
-    padding: 5,
-    borderColor: 'red',
-    borderRadius: 10,
-    borderWidth: 0.5,
-    margin: 5,
-    backgroundColor: 'white'
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  dropdown1BtnStyle: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left' },
+  dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
+  dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+  dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
 
-  }
 })
 
-
-export default Observations;
