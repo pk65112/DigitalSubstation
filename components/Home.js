@@ -15,6 +15,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Patrolling from './Patrolling';
+import Analysis from './Analysis';
 
 const stack = createNativeStackNavigator();
 const secIcons = [
@@ -61,6 +62,14 @@ const HomeScreen = (props) => {
             <Image style={[styles.imageicon]} source={require('./image/shedule.png')} />
             <Text style={styles.custombutton}
             >Schedule</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight activeOpacity={0.6} style = {styles.iconset}
+          onPress={() => props.navigation.navigate('Analysis', {  Analysis})}>
+          <View  style={{alignItems:'center'}}>
+            <Image style={[styles.imageicon]} source={require('./image/analysis.png')} />
+            <Text style={styles.custombutton}
+            >Analysis</Text>
           </View>
         </TouchableHighlight>
       </View>

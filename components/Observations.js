@@ -12,15 +12,17 @@ const reference = database().ref('/user/emp');
 const statuss = ["Normal", "Volunerable", "critical"]
 const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
 const designations = ["Executive", "NonExecutive", "AMC security"]
-const Observations = () => {
+const Observations = (props) => {
+  console.log(new Date().getDate)
+  console.log(props.route.params)
   useEffect(() => {
-    console.log(database.ServerValue.TIMESTAMP)
-    
-    getDatabase();
+    console.log(new Date().getDate())
+    console.log(new Date().getMonth())
+   
   }, []);
   const [userdata, setuserdata] = useState(null);
   const [name, setname] = useState('spot');
-  const [securityname, setSecurityname] = useState('User');
+  const [securityname, setSecurityname] = useState(null);
   const [observation, setObservation] = useState(null);
   const [status, setstatus] = useState(null);
   const [substation, setsubstation] = useState(null);
@@ -29,57 +31,40 @@ const Observations = () => {
   const [password, setpassword] = useState(null);
   const [cnfPassword, setCnfPassword] = useState(null);
   const [placeOfPosting, setPlaceOfPosting] = useState(null);
-
+  let date = new Date().getDate;
+  let month = new Date().getMonth()+1
+  
   function getStatus(sltddata) {
     setstatus(sltddata);
   }
-  function getsubstation(sltddata) {
-    setsubstation(sltddata);
-  }
-  function getdesignation(sltddata) {
-    setdesignation(sltddata);
-  }
-
-
-  const getDatabase = async () => {
-    try {
-      const data = await database().ref("user/emp").once('value');
-      console.log(data)
-      setuserdata(data.val().age)
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
+ 
+  // const getDatabase = async () => {
+  //   try {
+  //     const data = await database().ref("user/emp").once('value');
+  //     console.log(data)
+  //     setuserdata(data.val().age)
+  //   }
+  //   catch (err) {
+  //     console.log(err);
+  //   }
+  // }
   const saveData = async () => {
-    if (observation.trim()) {
+    if (observation && securityname) {
       try {
         const response = await database()
-          .ref('/users/' + emp)
-          .set({
+          .ref('/patrolling/odisha/pan/' + month )
+          .push({
             date:new Date().toLocaleString(),
             name: name,
-            designation: designation,
-            emp: emp,
-            region: region,
-            substation: substation,
-            placeOfPosting: placeOfPosting,
-            unit: unit,
-            password: password
+            securityname:securityname,
+            observation:observation
 
           })
           .then(() => {
             console.warn('Thank you... Registration successful');
             setname(null);
-            setdesignation(null);
-            setemp(null);
-
-            setsubstation(null);
-            setPlaceOfPosting(null);
-            setunit(null);
-            setCnfPassword(null);
-            setpassword(null);
-
+            setObservation(null);
+            setSecurityname(null);  
           });
       } catch (error) {
         console.log(error);
@@ -87,7 +72,7 @@ const Observations = () => {
 
     }
     else {
-      console.warn("please enter observations ")
+      console.warn("please enter username & observations ")
     }
 
   }
@@ -104,9 +89,9 @@ const Observations = () => {
           <View style={[styles.portion2, { flex: 5 }]}>
 
             <Text style={styles.text}>Observations</Text>
-            <Text style={styles.txtinput}>{name}</Text>
+            <Text style={styles.txtinput}>{props.route.params}</Text>
             {/* <Text style={styles.txtinput}>{securityname}</Text> */}
-            <TextInput style={styles.txtinput} value={securityname} onChangeText={(value) => setSecurityname(value)} />
+            <TextInput style={styles.txtinput} placeholder = 'user' value={securityname} onChangeText={(value) => setSecurityname(value)} />
             <Text style={{ fontStyle: 'italic', color: 'blackS' }}>{'Select condition :'}</Text>
             <Dropdown data={statuss} rtndata={getStatus} />
 
@@ -115,8 +100,7 @@ const Observations = () => {
             multiline={true}
               numberOfLines={4} 
               placeholder='Observation:-'
-              
-              onChangeText={(value) => setObservation(value)} />
+              value={observation}              onChangeText={(value) => setObservation(value)} />
 
             <TouchableHighlight>
               <Text style={styles.custombutton}

@@ -12,7 +12,7 @@ const stack = createNativeStackNavigator();
 
 const reference = database().ref('/spots/pan');
 
-const Patrolling = (props) => {
+const  Analysis = (props) => {
   const [spotdata, setspotdata] = useState([]);
   const [lati, setlati] = useState(null);
   const [long, setlong] = useState(null);
@@ -221,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Patrolling;
+export default Analysis;

@@ -30,6 +30,7 @@ import Patrolling from './components/Patrolling';
 import Observations from './components/Observations';
 import Dropdown from './components/Dropdown';
 import database from '@react-native-firebase/database';
+import Analysis from './components/Analysis';
 
 
 
@@ -57,6 +58,8 @@ const App = () => {
         <Stack.Screen name="Patrolling" component={Patrolling} />
         <Stack.Screen name="Observations" component={Observations} />
         <Stack.Screen name="Dropdown" component={Dropdown} />
+        <Stack.Screen name="Analysis" component={Analysis} />
+        
 
       </Stack.Navigator>
     </NavigationContainer>
