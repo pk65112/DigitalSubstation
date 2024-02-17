@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, KeyboardAvoidingView, Text, View, Button, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { FlatList, Image, KeyboardAvoidingView, Text, View, Button,Alert, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 import Dropdown from './Dropdown';
@@ -49,6 +49,7 @@ const Registration = () => {
     }
   }
   const saveData = async () => {
+    if(name && designation && emp && region && substation && placeOfPosting && password && cnfPassword){
     if (password == cnfPassword) {
       try {
         const response = await database()
@@ -64,7 +65,7 @@ const Registration = () => {
             password: password
 
           })
-          .then(() => {console.warn('Thank you... Registration successful');
+          .then(() => { Alert.alert('Thank you',' Registration successful')[{Text:'ok'}];
           setname(null);
           setdesignation(null);
           setemp(null);
@@ -82,8 +83,13 @@ const Registration = () => {
 
     }
     else {
-      console.warn("password and confirm password are not matched")
+      Alert.alert('Warning','password and confirm password are not matched')[{Text:'ok'}]
+      
     }
+  }
+  else{
+    Alert.alert('Warning','please enter all parameters')[{Text:'ok'}]
+  }
 
   }
   return (

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, KeyboardAvoidingView, Text, View, Button, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { FlatList, Image, KeyboardAvoidingView,Alert, Text, View, Button, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 import Dropdown from './Dropdown';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Patrolling from './Patrolling';
+import HomeScreen from './Home';
 
-
+const Stack = createNativeStackNavigator();
 
 const reference = database().ref('/user/emp');
 
@@ -13,24 +17,11 @@ const statuss = ["Normal", "Volunerable", "critical"]
 const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
 const designations = ["Executive", "NonExecutive", "AMC security"]
 const Observations = (props) => {
-  console.log(new Date().getDate)
-  console.log(props.route.params)
-  useEffect(() => {
-    console.log(new Date().getDate())
-    console.log(new Date().getMonth())
-   
-  }, []);
-  const [userdata, setuserdata] = useState(null);
-  const [name, setname] = useState('spot');
+  const [name, setname] = useState(props.route.params);
   const [securityname, setSecurityname] = useState(null);
   const [observation, setObservation] = useState(null);
   const [status, setstatus] = useState(null);
-  const [substation, setsubstation] = useState(null);
-  const [unit, setunit] = useState(null);
-  const [emp, setemp] = useState(null);
-  const [password, setpassword] = useState(null);
-  const [cnfPassword, setCnfPassword] = useState(null);
-  const [placeOfPosting, setPlaceOfPosting] = useState(null);
+  
   let date = new Date().getDate;
   let month = new Date().getMonth()+1
   
@@ -38,17 +29,9 @@ const Observations = (props) => {
     setstatus(sltddata);
   }
  
-  // const getDatabase = async () => {
-  //   try {
-  //     const data = await database().ref("user/emp").once('value');
-  //     console.log(data)
-  //     setuserdata(data.val().age)
-  //   }
-  //   catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+  
   const saveData = async () => {
+    
     if (observation && securityname) {
       try {
         const response = await database()
@@ -61,10 +44,12 @@ const Observations = (props) => {
 
           })
           .then(() => {
-            console.warn('Thank you... Registration successful');
-            setname(null);
+          Alert.alert('Thank you',' Observation submitted successfully',[{Text:'ok', onPress:()=>{props.navigation.pop(2)}, }]);
+            
             setObservation(null);
-            setSecurityname(null);  
+            setSecurityname(null); 
+            
+            
           });
       } catch (error) {
         console.log(error);
@@ -72,8 +57,10 @@ const Observations = (props) => {
 
     }
     else {
-      console.warn("please enter username & observations ")
+      Alert.alert('Warning','please enter username & observations')[{Text:'ok'}]
+      
     }
+    
 
   }
   return (
@@ -92,7 +79,7 @@ const Observations = (props) => {
             <Text style={styles.txtinput}>{props.route.params}</Text>
             {/* <Text style={styles.txtinput}>{securityname}</Text> */}
             <TextInput style={styles.txtinput} placeholder = 'user' value={securityname} onChangeText={(value) => setSecurityname(value)} />
-            <Text style={{ fontStyle: 'italic', color: 'blackS' }}>{'Select condition :'}</Text>
+            <Text style={{ fontStyle: 'italic', color: 'black' }}>{'Select condition :'}</Text>
             <Dropdown data={statuss} rtndata={getStatus} />
 
 

@@ -18,6 +18,7 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
@@ -94,7 +95,8 @@ const Login = (props) => {
       }
       
       else(
-        console.warn("password or Userid not matched")
+        Alert.alert('Warning','Worng password or User id')[{Text:'ok'}]
+        
       )
       
     }
