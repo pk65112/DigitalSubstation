@@ -16,12 +16,13 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Patrolling from './Patrolling';
-import Spotvisit from './Spotvisit';
+
 import database from '@react-native-firebase/database';
 const stack = createNativeStackNavigator();
 
-const Analysis = (props) => {
+const Spotvisit = (props) => {
   const [spotdata, setspotdata] = useState([]);
+  const [description, setDescription] = useState(props.route.params);
   const [lati, setlati] = useState(null);
   const [long, setlong] = useState(null);
   const [refresh, setRefresh] = useState(0);
@@ -29,6 +30,10 @@ const Analysis = (props) => {
   useEffect(() => {
     setshow(true)
     getDatabase();
+    let today = new Date();
+    let yesterday  = today.getDate()-1;
+    console.log(today.getTime());
+    console.log(yesterday);
   }, []);
 
   const getDatabase = async () => {
@@ -206,4 +211,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Analysis;
+export default Spotvisit;

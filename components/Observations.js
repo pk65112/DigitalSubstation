@@ -21,8 +21,10 @@ const Observations = (props) => {
   const [securityname, setSecurityname] = useState(null);
   const [observation, setObservation] = useState(null);
   const [status, setstatus] = useState(null);
+  const[timestamp, setTimestamp] = useState(null);
   
-  let date = new Date().getDate;
+  let date = new Date();
+  setTimestamp(date.getTime());
   let month = new Date().getMonth()+1
   
   function getStatus(sltddata) {
@@ -38,6 +40,7 @@ const Observations = (props) => {
           .ref('/patrolling/odisha/pan/' + month )
           .push({
             date:new Date().toLocaleString(),
+            timestamp:timestamp,
             name: name,
             securityname:securityname,
             observation:observation
