@@ -100,7 +100,7 @@ const Patrolling = (props) => {
             return (
               <View style ={{backgroundColor:'pink', padding:8, margin:4, borderRadius:8,}}>
                 < TouchableHighlight onPress={() => props.navigation.navigate('Observations',Item.item.description ,{ Observations })}>
-                  <Text style={{color:'black'}}>{Item.item.description} >>></Text>
+                  <Text style={{color:'black'}}>{Item.item.description} {'>>>'}</Text>
                 </TouchableHighlight>
               </View>
             )
