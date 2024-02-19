@@ -23,21 +23,28 @@ const Observations = (props) => {
   const [status, setstatus] = useState(null);
   const[timestamp, setTimestamp] = useState(null);
   
-  let date = new Date();
-  setTimestamp(date.getTime());
-  let month = new Date().getMonth()+1
   
   function getStatus(sltddata) {
     setstatus(sltddata);
   }
+  useEffect(() => {
+    let date = new Date();
+  setTimestamp(date.getTime());
+  console.log(date.getFullYear());
+  
+  },[] );
  
   
   const saveData = async () => {
     
+    let month = new Date().getMonth()+1;
+    let year = new Date().getFullYear();
+
+
     if (observation && securityname) {
       try {
         const response = await database()
-          .ref('/patrolling/odisha/pan/' + month )
+          .ref('/patrolling/odisha/pan/'+year + month )
           .push({
             date:new Date().toLocaleString(),
             timestamp:timestamp,

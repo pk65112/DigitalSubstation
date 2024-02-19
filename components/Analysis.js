@@ -58,23 +58,23 @@ const Analysis = (props) => {
 
   return (
     <View style={styles.sectionContainer}>
-
+      <ScrollView> 
       <View style={[styles.portion1, { flex: 1 }]} >
         <Text style={styles.logo}>  </Text>
         <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
         <Text style={styles.logo}> </Text>
       </View>
-      <ScrollView> 
+      
       <View style={[styles.portion2, { flex: 3 }]}>
        
-      <FlatList
+      <FlatList numColumns={3} 
           data={spotdata}
           renderItem={Item => {
             console.log('renderItem', Item)
 
             return (
-              <View>
-                 <TouchableHighlight activeOpacity={0.6} style = {styles.iconset}
+              <View  style = {{borderWidth:1, width:'30%',margin:4,borderRadius:10,borderBlockColor:'red'}}>
+                 <TouchableHighlight  activeOpacity={0.6} style = {[styles.iconset,] }
           onPress={() => props.navigation.navigate('Spotvisit', Item.item.description, { Spotvisit })}>
           <View  style={{alignItems:'center'}}>
             <Image style={[styles.imageicon]} source={require('./image/spot.png')} />
@@ -92,11 +92,11 @@ const Analysis = (props) => {
          
        
       </View>
-      </ScrollView>
+      
       <View style={[styles.portion3, { flex: 1 }]}>
 
       </View>
-
+      </ScrollView>
     </View>
 
   )

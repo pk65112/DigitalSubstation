@@ -12,10 +12,8 @@ const reference = database().ref('/user/emp');
 const regions = ["Odisha", "ER_1", "ER_2", "CC"]
 const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
 const designations = ["Executive", "NonExecutive", "AMC security"]
-const Registration = () => {
-  useEffect(() => {
-    getDatabase();
-  }, []);
+const Registration = (props) => {
+ 
   const [userdata, setuserdata] = useState(null);
   const [name, setname] = useState(null);
   const [designation, setdesignation] = useState(null);
@@ -26,7 +24,7 @@ const Registration = () => {
   const [password, setpassword] = useState(null);
   const [cnfPassword, setCnfPassword] = useState(null);
   const [placeOfPosting, setPlaceOfPosting] = useState(null);
-
+ 
   function getRegion(sltddata) {
     setregion(sltddata);
   }
@@ -38,16 +36,7 @@ const Registration = () => {
   }
 
 
-  const getDatabase = async () => {
-    try {
-      const data = await database().ref("user/emp").once('value');
-      console.log(data)
-      setuserdata(data.val().age)
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
+  
   const saveData = async () => {
     if(name && designation && emp && region && substation && placeOfPosting && password && cnfPassword){
     if (password == cnfPassword) {
@@ -62,10 +51,10 @@ const Registration = () => {
             substation: substation,
             placeOfPosting: placeOfPosting,
             unit: unit,
-            password: password
-
+            password: password,
+            permition:false
           })
-          .then(() => { Alert.alert('Thank you',' Registration successful')[{Text:'ok'}];
+          .then(() => { Alert.alert('Thank you',' Registration  successfully',[{Text:'ok', onPress:()=>{props.navigation.pop(2)}, }]);
           setname(null);
           setdesignation(null);
           setemp(null);

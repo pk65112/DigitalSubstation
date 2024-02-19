@@ -98,9 +98,9 @@ const Patrolling = (props) => {
             console.log('renderItem', Item)
 
             return (
-              <View>
+              <View style ={{backgroundColor:'pink', padding:8, margin:4, borderRadius:8,}}>
                 < TouchableHighlight onPress={() => props.navigation.navigate('Observations',Item.item.description ,{ Observations })}>
-                  <Text>{Item.item.description}</Text>
+                  <Text style={{color:'black'}}>{Item.item.description} >>></Text>
                 </TouchableHighlight>
               </View>
             )
@@ -110,7 +110,7 @@ const Patrolling = (props) => {
 
         />
         <ActivityIndicator size={'large'} color={'blue'} animating={show} />
-        <Button title='refresh' onPress={()=>setRefresh(refresh+1)} />
+        <Button title='search ' onPress={()=>setRefresh(refresh+1)} />
 
 
 

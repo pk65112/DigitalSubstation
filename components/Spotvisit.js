@@ -28,25 +28,35 @@ const Spotvisit = (props) => {
   const [refresh, setRefresh] = useState(0);
   const [show, setshow] = useState(false);
   useEffect(() => {
+
+
     setshow(true)
     getDatabase();
-    let today = new Date();
-    let yesterday  = today.getDate()-1;
-    console.log(today.getTime());
-    console.log(yesterday);
+
   }, []);
 
   const getDatabase = async () => {
     try {
-      
-      await database().ref('/spots/pan').once('value', snapshot => {
+      let today = new Date();
+      let mnt = today.getMonth() + 1;
+      let year = today.getFullYear();
+      let currentTime = today.getTime();
+      await database().ref('/patrolling/odisha/pan').orderByValue().limitToLast(2).once('value', snapshot => {
         let data = [];
         snapshot.forEach((child) => {
-          console.log(child.val().description)
-          data.push(child.val());
-              console.log(data);
-              setspotdata(data)
-              console.log(spotdata);
+          child.forEach((nestedChild) => {
+            if (nestedChild.val().timestamp >= currentTime - 48 * 3600 * 1000) {
+              if (nestedChild.val().name == props.route.params) {
+                data.push(nestedChild.val());
+                console.log('visitdetails Data', data);
+                setspotdata(data)
+                console.log('visitdetails', spotdata);
+              }
+
+
+            }
+
+          })
 
         })
 
@@ -64,43 +74,40 @@ const Spotvisit = (props) => {
   return (
     <View style={styles.sectionContainer}>
 
-      <View style={[styles.portion1, { flex: 1 }]} >
+      <View style={[styles.portion1,]} >
         <Text style={styles.logo}>  </Text>
         <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
         <Text style={styles.logo}> </Text>
       </View>
-      <ScrollView> 
-      <View style={[styles.portion2, { flex: 3 }]}>
-       
-      <FlatList
-          data={spotdata}
-          renderItem={Item => {
-            console.log('renderItem', Item)
+      <ScrollView>
+        <View style={[styles.portion2, { flex: 3,  }]}>
+          <Text style={{ fontSize: 22, color: 'red', textDecorationLine: 'underline' }} >{props.route.params}</Text>
+          <FlatList
+            data={spotdata}
+            renderItem={Item => {
+              console.log('renderItem', Item)
 
-            return (
-              <View>
-                 <TouchableHighlight activeOpacity={0.6} style = {styles.iconset}
-          onPress={() => props.navigation.navigate('Spotvisit', Item.item.description, { Spotvisit })}>
-          <View  style={{alignItems:'center'}}>
-            <Image style={[styles.imageicon]} source={require('./image/spot.png')} />
-            <Text style={styles.custombutton} >{Item.item.description}</Text>
-          </View>
-        </TouchableHighlight>
-                
-              </View>
-            )
+              return (
+                <View style={{ borderWidth: 1, width: '90%', padding: 20, margin: 4, width: Dimensions.get("window").width, borderRadius: 10, borderBlockColor: 'red' }}>
+                  <Text style={{ width: '100%', padding: 4, color:'brown' }} >Date :- {Item.item.date}</Text>
+                  <Text style={{ width: '100%', padding: 4,color:'brown' }} >Status :- {Item.item.observation}</Text>
+                  <Text style={{ width: '100%', padding: 4,color:'brown' }} >Visited By :- {Item.item.securityname}</Text>
+                  
+                </View>
 
-          }}
-          keyExtractor={item => item.id}
 
-        />
-         
-       
-      </View>
+
+              )
+
+            }}
+            keyExtractor={item => item.id}
+
+          />
+
+
+        </View>
       </ScrollView>
-      <View style={[styles.portion3, { flex: 1 }]}>
 
-      </View>
 
     </View>
 
@@ -116,32 +123,20 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
   },
   portion1: {
-    paddingHorizontal: 24,
+    paddingTop: 24,
     flexDirection: 'row',
-
-
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    
 
   },
   portion2: {
-    margin: 30,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-   
-    
-  },
-  portion3: {
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center'
-
-
-
+    paddingTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
 
   },
+
 
   logo: {
     flex: 1,
@@ -151,7 +146,7 @@ const styles = StyleSheet.create({
 
 
   },
-  
+
   text: {
     textAlign: 'center',
     color: 'blue',
@@ -159,56 +154,10 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
 
   },
-  txtinput: {
-    textAlign: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
-    backgroundColor: 'white',
-    fontSize: 15,
-    borderRadius: 8,
-    marginHorizontal: 20,
-    marginTop: 10
 
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    textAlign: 'center'
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  custombutton: {
-    borderColor: 'red',
-    color: 'blue',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  imageicon: {
-    height: 80, width: 50,
-    backgroundColor:'white'
 
-  },
-  icon: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'blue'
-  },
-  iconset:{
-    alignItems:'center',
-    padding:5,
-    borderColor:'red',
-    borderRadius:10,
-    borderWidth:0.5,
-    margin:5,
-    backgroundColor:'white'
 
-  }
+
 })
 
 export default Spotvisit;

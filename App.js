@@ -90,11 +90,15 @@ const Login = (props) => {
       const data = await database().ref('/users/'+userid).once('value');
       console.log(data)
       if (data.val().password ==pd){
-        props.navigation.navigate('Home', { Home })
+        if(data.val().permission == true){
+          props.navigation.navigate('Home', { Home })
         setuserid(null);
-        
-        
         setpassword(null);
+        }
+        else{
+          Alert.alert('Warning','please contact with admin for permission')[{Text:'ok'}]
+        }
+        
       }
       
       else(
