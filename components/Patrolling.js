@@ -18,7 +18,7 @@ const Patrolling = (props) => {
   const [long, setlong] = useState(null);
   const [refresh, setRefresh] = useState(0);
   const [show, setshow] = useState(false);
-  
+  const [find, setFind] = useState(0)
   useEffect(() => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
@@ -42,8 +42,20 @@ const Patrolling = (props) => {
   useEffect(() => {
     setshow(true)
     getDatabase();
-  }, [refresh]);
-
+  }, [find]);
+const goto = ()=>{
+  
+  () => props.navigation.navigate('Observations',Item.item.description ,{ Observations });
+  setlati(null);
+  setlong(null);
+  setspotdata(null)
+}
+const findSpot = ()=>{
+  
+  setFind(find+1);
+  setRefresh(refresh+1);
+  
+}
   const getDatabase = async () => {
     try {
       
@@ -99,7 +111,9 @@ const Patrolling = (props) => {
 
             return (
               <View style ={{backgroundColor:'pink', padding:8, margin:4, borderRadius:8,}}>
-                < TouchableHighlight onPress={() => props.navigation.navigate('Observations',Item.item.description ,{ Observations })}>
+                < TouchableHighlight onPress={ () => props.navigation.navigate('Observations',Item.item.description ,{ Observations })
+                 
+ }>
                   <Text style={{color:'black'}}>{Item.item.description} {'>>>'}</Text>
                 </TouchableHighlight>
               </View>
@@ -110,36 +124,12 @@ const Patrolling = (props) => {
 
         />
         <ActivityIndicator size={'large'} color={'blue'} animating={show} />
-        <Button title='search ' onPress={()=>setRefresh(refresh+1)} />
-
-
-
-
-
-
-
-
-
-
+        <Button title='search ' onPress={findSpot} />
       </View>
 
       <View style={[styles.portion, { flex: 1 }]}>
         <Text>Copy write @ Powergrid </Text>
       </View>
-    </View>
-  )
-}
-
-const RenderSpot = (props) => {
-  return (
-    <View>
-      <FlatList
-        data={props.name}
-        renderItem={item => {
-          console.log('detected', item)
-        }}
-      />
-      <Text>{props.name}</Text>
     </View>
   )
 }
