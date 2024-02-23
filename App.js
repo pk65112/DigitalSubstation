@@ -33,6 +33,8 @@ import Dropdown from './components/Dropdown';
 import database from '@react-native-firebase/database';
 import Analysis from './components/Analysis';
 import Spotvisit from './components/Spotvisit';
+import Getgps from './components/Getgps';
+
 
 
 
@@ -63,6 +65,7 @@ const App = () => {
         <Stack.Screen name="Dropdown" component={Dropdown} />
         <Stack.Screen name="Analysis" component={Analysis} />
         <Stack.Screen name="Spotvisit" component={Spotvisit} />
+        <Stack.Screen name="Getgps" component={Getgps} />
         
 
       </Stack.Navigator>

@@ -4,98 +4,35 @@ import {
   StyleSheet, ActivityIndicator,Alert, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import database from '@react-native-firebase/database';
-import Observations from './Observations';
-import Geolocation from 'react-native-geolocation-service';
-const stack = createNativeStackNavigator();
-
-const reference = database().ref('/spots/pan');
-
-const Patrolling = (props) => {
-  const [spotdata, setspotdata] = useState([]);
-  const[filterdata,setFilterData] = useState([]);
+const Getgps = (props) => {
+  
   const [lati, setlati] = useState(null);
   const [long, setlong] = useState(null); 
   const [refresh, setRefresh] = useState(0);
   const [show, setshow] = useState(false);
-  const [find, setFind] = useState(0)
-
-  let data = [];
  
   useEffect(() => {
-    getDatabase();
+    getLocation();
     
   }, [refresh]);
   
-
- const autoRefresh=()=>{
-
-  setTimeout(() => {
-    if(data==null){
-      getDatabase();
-    }
-    else{
-      setshow(false);
-    }
-  }, 6000);
- }
-
-
   const getLocation= ()=>{
-    getDatabase();
+    setshow(true);
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
-      timeout: 50000,
+      timeout: 10000,
     })
-      .then(location => {
-        console.log('spots',spotdata);
-         const firstStgFltr = spotdata.filter(x => x.latitude >= location.latitude - 0.00090
-           && x.latitude <= location.latitude + 0.00090 && x.longitude >= location.longitude - 0.00090 
-           && x.longitude <= location.longitude + 0.00090 );
-        console.log('firstStgFltr',firstStgFltr);
-        
-       
-        setFilterData(firstStgFltr);
-        
-        
+      .then(location => {  
         console.log(location);
-        console.log('filtered Data',filterdata)
-        
+        setlati(location.altitude);
+        setlong(location.longitude);
+        setshow(false);
       })
       .catch(error => {
         const { code, message } = error;
         console.warn(code, message);
       })
   }
-
-const getDatabase = async () => {
-  try {
-    setshow(true)
-    await database().ref('/spots/pan').once('value', snapshot => {
-      
-      snapshot.forEach((child) => {
-        data.push(child.val());
-          //  console.log(data)
-            setspotdata(data);
-
-      })
-
-    }).then(() =>console.log( 'Array Data',data) );
-  }
-  catch (err) {
-    console.log(err);
-  }
-  autoRefresh();
-}
- 
-
-  const Item = ({ title }) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.sectionContainer}>
       <View style={[styles.portion, { flex: 1 }]}>
@@ -103,45 +40,18 @@ const getDatabase = async () => {
         <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
         <Text style={styles.logo}> </Text>
       </View>
-
-      <View style={[styles.portion2, { flex: 3 }]}>
-        
-        <FlatList
-          data={filterdata}
-          renderItem={Item => {
-            console.log('renderItem', Item)
-
-            return (
-              <View style ={{backgroundColor:'pink', padding:8, margin:4, borderRadius:8,}}>
-                < TouchableHighlight onPress={ () => props.navigation.navigate('Observations',Item.item.description ,{ Observations })
-                 
- }>
-                  <Text style={{color:'black'}}>{Item.item.description} {'>>>'}</Text>
-                </TouchableHighlight>
-              </View>
-            )
-
-          }}
-          keyExtractor={item => item.id}
-
-        />
+      <View style={[styles.portion2, { flex: 3 }]}>  
         <ActivityIndicator size={'large'} color={'blue'} animating={show} />
-        <Button title='search ' onPress={getLocation} />
+        <Text style={styles.text}>Latitude: {lati}</Text>
+        <Text style={styles.text}>Longitude: {long}</Text>
+        <Button title='search ' onPress={setRefresh(refresh+1)} />
       </View>
-
       <View style={[styles.portion, { flex: 1 }]}>
         <Text>Copy write @ Powergrid </Text>
       </View>
     </View>
   )
 }
-
-
-
-
-
-
-
 const styles = StyleSheet.create({
   sectionContainer: {
     backgroundColor: 'rgba(250, 250, 246, 0.959)',
@@ -213,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Patrolling;
+export default Getgps;
