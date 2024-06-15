@@ -50,9 +50,9 @@ const Patrolling = (props) => {
     })
       .then(location => {
         console.log('spots',spotdata);
-         const firstStgFltr = spotdata.filter(x => x.latitude >= location.latitude - 0.00090
-           && x.latitude <= location.latitude + 0.00090 && x.longitude >= location.longitude - 0.00090 
-           && x.longitude <= location.longitude + 0.00090 );
+         const firstStgFltr = spotdata.filter(x => x.latitude >= location.latitude - 0.0090
+           && x.latitude <= location.latitude + 0.0090 && x.longitude >= location.longitude - 0.0090 
+           && x.longitude <= location.longitude + 0.0090 );
         console.log('firstStgFltr',firstStgFltr);
         
        
@@ -130,7 +130,7 @@ const getDatabase = async () => {
       </View>
 
       <View style={[styles.portion, { flex: 1 }]}>
-        <Text>Copy write @ Powergrid </Text>
+        <Text>Copyright @ Powergrid </Text>
       </View>
     </View>
   )

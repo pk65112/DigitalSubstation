@@ -1,86 +1,76 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, KeyboardAvoidingView, Text, View, Button,Alert, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { FlatList, Image, KeyboardAvoidingView,Alert, Text, View, Button, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 import Dropdown from './Dropdown';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Patrolling from './Patrolling';
+import HomeScreen from './Home';
 
-
+const Stack = createNativeStackNavigator();
 
 const reference = database().ref('/user/emp');
 
-const regions = ["Odisha", "ER_1", "ER_2", "CC"]
+const statuss = ["Normal", "Volunerable", "critical"]
 const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
 const designations = ["Executive", "NonExecutive", "AMC security"]
-const Registration = (props) => {
+const MaterialStock = (props) => {
+  const [name, setname] = useState(props.route.params);
+  const [securityname, setSecurityname] = useState(null);
+  const [observation, setObservation] = useState(null);
+  const [status, setstatus] = useState(null);
+  const[timestamp, setTimestamp] = useState(null);
+  
+  
+  function getStatus(sltddata) {
+    setstatus(sltddata);
+  }
+  useEffect(() => {
+    let date = new Date();
+  setTimestamp(date.getTime());
+  console.log(date.getFullYear());
+  
+  },[] );
  
-  const [userdata, setuserdata] = useState(null);
-  const [name, setname] = useState(null);
-  const [designation, setdesignation] = useState(null);
-  const [region, setregion] = useState(null);
-  const [substation, setsubstation] = useState(null);
-  const [unit, setunit] = useState(null);
-  const [emp, setemp] = useState(null);
-  const [password, setpassword] = useState(null);
-  const [cnfPassword, setCnfPassword] = useState(null);
-  const [placeOfPosting, setPlaceOfPosting] = useState(null);
- 
-  function getRegion(sltddata) {
-    setregion(sltddata);
-  }
-  function getsubstation(sltddata) {
-    setsubstation(sltddata);
-  }
-  function getdesignation(sltddata) {
-    setdesignation(sltddata);
-  }
-
-
   
   const saveData = async () => {
-    if(name && designation && emp && region && substation && placeOfPosting && password && cnfPassword){
-    if (password == cnfPassword) {
+    
+    let month = new Date().getMonth()+1;
+    let year = new Date().getFullYear();
+
+
+    if (observation && securityname) {
       try {
         const response = await database()
-          .ref('/users/' + emp)
-          .set({
+          .ref('/patrolling/odisha/pan/'+year + month )
+          .push({
+            date:new Date().toLocaleString(),
+            timestamp:timestamp,
             name: name,
-            designation: designation,
-            emp: emp,
-            region: region,
-            substation: substation,
-            placeOfPosting: placeOfPosting,
-            unit: unit,
-            password: password,
-            permission:false,
-            active:false,
-            onduty:false
-          })
-          .then(() => { Alert.alert('Thank you',' Registration  successfully',[{Text:'ok', onPress:()=>{props.navigation.pop(2)}, }]);
-          setname(null);
-          setdesignation(null);
-          setemp(null);
-          setregion(null);
-          setsubstation(null);
-          setPlaceOfPosting(null);
-          setunit(null);
-          setCnfPassword(null);
-          setpassword(null);
+            securityname:securityname,
+            observation:observation
 
-        });
+          })
+          .then(() => {
+          Alert.alert('Thank you',' Observation submitted successfully',[{Text:'ok', onPress:()=>{props.navigation.pop(2)}, }]);
+            
+            setObservation(null);
+            setSecurityname(null); 
+            
+            
+          });
       } catch (error) {
         console.log(error);
       }
 
     }
     else {
-      Alert.alert('Warning','password and confirm password are not matched')[{Text:'ok'}]
+      Alert.alert('Warning','please enter username & observations')[{Text:'ok'}]
       
     }
-  }
-  else{
-    Alert.alert('Warning','please enter all parameters')[{Text:'ok'}]
-  }
+    
 
   }
   return (
@@ -95,16 +85,20 @@ const Registration = (props) => {
 
           <View style={[styles.portion2, { flex: 5 }]}>
 
-            <Text style={styles.text}>Registration</Text>
-            <TextInput style={styles.txtinput} placeholder='Name' value={name} onChangeText={(value) => setname(value)} />
-            <TextInput style={styles.txtinput} placeholder='Designation' value={designation} onChangeText={(value) => setdesignation(value)} />
-            <TextInput style={styles.txtinput} placeholder='Employee No.' value={emp} onChangeText={(value) => setemp(value)} />
-            <Dropdown data={regions} rtndata={getRegion} />
-            <Dropdown data={substations} rtndata={getsubstation} />
-            {/* <Dropdown data={designations} rtndata={getdesignation} /> */}
-            <TextInput style={styles.txtinput} placeholder='place of posting' value={placeOfPosting} onChangeText={(value) => setPlaceOfPosting(value)} />
-            <TextInput style={styles.txtinput} placeholder='password' value={password} onChangeText={(value) => setpassword(value)} />
-            <TextInput style={styles.txtinput} placeholder='confirm password' value={cnfPassword} onChangeText={(value) => setCnfPassword(value)} />
+            <Text style={styles.text}>Observations</Text>
+            <Text style={styles.txtinput}>{props.route.params}</Text>
+            {/* <Text style={styles.txtinput}>{securityname}</Text> */}
+            <TextInput style={styles.txtinput} placeholder = 'user' value={securityname} onChangeText={(value) => setSecurityname(value)} />
+            <Text style={{ fontStyle: 'italic', color: 'black' }}>{'Select condition :'}</Text>
+            <Dropdown data={statuss} rtndata={getStatus} />
+
+
+            <TextInput style={ [styles.txtinput ,{height:100, textAlignVertical: 'top'}]} 
+            multiline={true}
+              numberOfLines={4} 
+              placeholder='Observation:-'
+              value={observation}              onChangeText={(value) => setObservation(value)} />
+
             <TouchableHighlight>
               <Text style={styles.custombutton}
                 onPress={() => saveData()}>submit</Text>
@@ -119,7 +113,7 @@ const Registration = (props) => {
   );
 }
 
-export default Registration;
+export default MaterialStock;
 const styles = StyleSheet.create({
 
   sectionContainer: {
@@ -250,3 +244,4 @@ const styles = StyleSheet.create({
   dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
 
 })
+

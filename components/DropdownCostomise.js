@@ -1,8 +1,8 @@
-import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 'react-native';
+import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList, ScrollView} from 'react-native';
   import React, {useRef, useState} from 'react';
   
-  const Dropdown= (props) => {
-    console.log("Dropdown props",props.data);
+  const DropdownCostomise= (props) => {
+    console.log(props.data);
    
     
     const [search, setSearch] = useState('');
@@ -26,7 +26,7 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
        
         <TouchableOpacity
           style={{
-            width:Dimensions.get("window").width*0.7,
+            width:270,
             height: 32,
             borderRadius: 10,
             borderWidth: 0.5,
@@ -35,7 +35,6 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            paddingLeft: 15,
             paddingRight: 15,
           }}
           onPress={() => {
@@ -88,14 +87,16 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
                 paddingLeft: 20,
               }}
             /> */}
-  
+           
             <FlatList
               data={data}
               
               renderItem={({item}) => {
                 console.log('renderItem',item)
                 return (
+                 
                   <TouchableOpacity
+                  
                     style={{
                       width: '85%',
                       alignSelf: 'center',
@@ -103,6 +104,7 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
                       justifyContent: 'center',
                       borderBottomWidth: 0.5,
                       borderColor: '#8e8e8e',
+                      
                     }}
                     onPress={() => {
                       setSelectedItem(item);
@@ -111,15 +113,18 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
                       // onSearch('');
                       setSearch('');
                     }}>
-                    <Text style={{fontWeight: '600'}}>{item}</Text>
+                      <Text style={{fontWeight: '600'}}>{item}</Text>
+                   
                   </TouchableOpacity>
+                  
                 );
               }}
             />
+           
           </View>
         ) : null}
       </View>
     );
   };
   
-  export default Dropdown;
+  export default DropdownCostomise;

@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 
 import {
   FlatList,
@@ -24,7 +24,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Registration from './components/Registration';
 import Home from './components/Home';
 import Patrolling from './components/Patrolling';
@@ -34,8 +34,14 @@ import database from '@react-native-firebase/database';
 import Analysis from './components/Analysis';
 import Spotvisit from './components/Spotvisit';
 import Getgps from './components/Getgps';
-
-
+import Schedule from './components/Schedule';
+import ConstructionHome from './components/ConstructionHome'
+import NewProject from './components/NewProject';
+import MaterialEntry from './components/MaterialEntry';
+import MaterialOut from './components/MaterialOut';
+import Sfqp from './components/Sfqp';
+import MaterialStock from './components/MaterialStock';
+import AddMaterials from './components/AddMaterials';
 
 
 
@@ -46,7 +52,8 @@ const Stack = createNativeStackNavigator();
 
 
 const App = () => {
-
+  
+  
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -57,7 +64,7 @@ const App = () => {
             fontWeight: 'bold',
           },
           headerBackVisible: false,
-          
+
         }} />
         <Stack.Screen name="Registration" component={Registration} />
         <Stack.Screen name="Patrolling" component={Patrolling} />
@@ -66,7 +73,14 @@ const App = () => {
         <Stack.Screen name="Analysis" component={Analysis} />
         <Stack.Screen name="Spotvisit" component={Spotvisit} />
         <Stack.Screen name="Getgps" component={Getgps} />
-        
+        <Stack.Screen name="Schedule" component={Schedule} />
+        <Stack.Screen name="ConstructionHome" component={ConstructionHome} />
+        <Stack.Screen name="NewProject" component={NewProject} />
+        <Stack.Screen name="MaterialEntry" component={MaterialEntry} />
+        <Stack.Screen name="MaterialOut" component={MaterialOut} />
+        <Stack.Screen name="Sfqp" component={Sfqp} />
+        <Stack.Screen name="MaterialStock" component={MaterialStock} />
+        <Stack.Screen name="AddMaterials" component={AddMaterials} />
 
       </Stack.Navigator>
     </NavigationContainer>
@@ -75,8 +89,8 @@ const App = () => {
 
 
 const Login = (props) => {
-  const [userid,setuserid]= useState(null);
-  const [password,setpassword]= useState(null);
+  const [userid, setuserid] = useState(null);
+  const [password, setpassword] = useState(null);
   // const getDatabase = async ()=>{
   //   try{
   //     const data = await database().ref("user/emp").once('value');
@@ -87,30 +101,75 @@ const Login = (props) => {
   //     console.log(err);
   //   }
   //  }
-   let id ,pd;
-  const loginAttempt= async (id,pd)=>{
-    try{
-      const data = await database().ref('/users/'+userid).once('value');
-      console.log(data)
-      if (data.val().password ==pd){
-        if(data.val().permission == true){
-          props.navigation.navigate('Home', { Home })
-        setuserid(null);
-        setpassword(null);
-        }
-        else{
-          Alert.alert('Warning','please contact with admin for permission')[{Text:'ok'}]
-        }
-        
-      }
-      
-      else(
-        Alert.alert('Warning','Worng password or User id')[{Text:'ok'}]
-        
-      )
-      
+  const userDetails ={
+    userID :userid,
+    passWord: password,
+  }
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('user_details', JSON.stringify(userDetails));
+    } catch (e) {
+      // saving error
     }
-    catch(err){
+  };
+  const getData = async (value) => {
+    try {
+     let user_details = await AsyncStorage.getItem('user_details');
+     user_details = JSON.parse(user_details);
+     console.log('logindata', userDetails)
+    } catch (e) {
+      // saving error
+    }
+  };
+  let id, pd;
+  const loginAttempt = async (id, pd) => {
+    try {
+      const data = await database().ref('/users/' + userid).once('value');
+      console.log(data)
+      if (data.val().password == pd) {
+        if (data.val().permission == true) {
+
+          if (data.val().onduty == true) {
+            if (data.val().active == false) {
+              
+
+              try {
+                const response = await database()
+                  .ref('/users/' + userid + '/active')
+                  .set(true)
+                  .then(() => {
+                    props.navigation.navigate('Home',userid, { Home })
+                    setuserid(null);
+                    setpassword(null);
+                    storeData();
+                    getData();
+                  });
+              } catch (error) {
+                console.log(error);
+              }
+
+            }
+            else {
+              Alert.alert('Warning', 'You are already logged in another device')[{ Text: 'ok' }]
+            }
+          }
+          else {
+            Alert.alert('Warning', 'You are not on duty')[{ Text: 'ok' }]
+          }
+        }
+        else {
+          Alert.alert('Warning', 'please contact with admin for permission')[{ Text: 'ok' }]
+        }
+
+      }
+
+      else (
+        Alert.alert('Warning', 'Worng password or User id')[{ Text: 'ok' }]
+
+      )
+
+    }
+    catch (err) {
       console.log(err);
     }
 
@@ -118,32 +177,32 @@ const Login = (props) => {
 
 
   return (
-   
+
     <View style={styles.sectionContainer}>
       <View style={[styles.portion1, { flex: 1 }]}>
         <Text style={styles.logo}>  </Text>
-        <Image style={[styles.logo, {flex:2}]} source={require('./components/image/power_grid_logo.png')} />
+        <Image style={[styles.logo, { flex: 2 }]} source={require('./components/image/power_grid_logo.png')} />
         <Text style={styles.logo}> </Text>
       </View>
       <View style={[styles.portion2, { flex: 3 }]}>
         <Text style={styles.sectionTitle}>Let's Login !</Text>
-        <TextInput ref={this.useridInput} style={styles.txtinput} placeholder='User Name'value={userid} onChangeText={(value)=>setuserid(value)}></TextInput>
-        <TextInput style={styles.txtinput} placeholder='Password' value={password} onChangeText={(value)=>setpassword(value)}></TextInput>
-        
+        <TextInput ref={this.useridInput} style={styles.txtinput} placeholder='User Name' value={userid} onChangeText={(value) => setuserid(value)}></TextInput>
+        <TextInput style={styles.txtinput} placeholder='Password' value={password} onChangeText={(value) => setpassword(value)}></TextInput>
+
         <TouchableHighlight>
           <Text style={styles.custombutton}
-          onPress={()=>loginAttempt(userid ,password)}>Login</Text>
+            onPress={() => loginAttempt(userid, password)}>Login</Text>
         </TouchableHighlight>
-        
+
 
       </View>
       <View style={[styles.portion3, { flex: 1 }]}>
-      <TouchableHighlight>
+        <TouchableHighlight>
           <Text style={styles.custombutton}
-          onPress={() => props.navigation.navigate('Registration', { Registration })}>Go for Registration</Text>
+            onPress={() => props.navigation.navigate('Registration', { Registration })}>Go for Registration</Text>
         </TouchableHighlight>
-        
-      
+
+
       </View>
     </View>
   )
@@ -160,11 +219,11 @@ const styles = StyleSheet.create({
   portion1: {
     paddingHorizontal: 24,
     flexDirection: 'row',
-    
-    
-    alignItems: 'center', 
+
+
+    alignItems: 'center',
     justifyContent: 'center'
-    
+
   },
   portion2: {
     margin: 30,
@@ -177,21 +236,21 @@ const styles = StyleSheet.create({
   portion3: {
     paddingHorizontal: 24,
     flexDirection: 'row',
-    textAlign:'center',
-    alignItems: 'center', 
+    textAlign: 'center',
+    alignItems: 'center',
     justifyContent: 'center'
-   
-   
-   
-    
+
+
+
+
   },
 
   logo: {
     flex: 1,
     flexDirection: 'column',
-    height:50, width: 30,
-    justifyContent:'center',
-    
+    height: 50, width: 30,
+    justifyContent: 'center',
+
 
   },
   text: {
@@ -215,7 +274,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',
-    textAlign:'center'
+    textAlign: 'center'
   },
   sectionDescription: {
     marginTop: 8,
@@ -225,17 +284,17 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-  custombutton:{
+  custombutton: {
     backgroundColor: 'pink',
-    borderWidth:2,
-    borderColor:'red',
-    borderRadius:8,
-    shadowColor:'pink',
-    color:'blue',
-    fontSize:20,
+    borderWidth: 2,
+    borderColor: 'red',
+    borderRadius: 8,
+    shadowColor: 'pink',
+    color: 'blue',
+    fontSize: 20,
     textAlign: 'center',
-    padding:5,
-    margin:20
+    padding: 5,
+    margin: 20
 
 
   }

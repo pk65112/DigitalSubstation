@@ -2,7 +2,7 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
   import React, {useRef, useState} from 'react';
   
   const Dropdown= (props) => {
-    console.log("Dropdown props",props.data);
+    console.log(props.data);
    
     
     const [search, setSearch] = useState('');
@@ -26,7 +26,7 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
        
         <TouchableOpacity
           style={{
-            width:Dimensions.get("window").width*0.7,
+            width:Dimensions.get("window").width*0.5,
             height: 32,
             borderRadius: 10,
             borderWidth: 0.5,
@@ -49,12 +49,12 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
           {clicked ? (
             <Image
             source={require('./image/upload.png')}
-              style={{width: 20, height: 20}}
+              style={{width: 15, height: 15}}
             />
           ) : (
             <Image
               source={require('./image/dropdown.png')}
-              style={{width: 20, height: 20}}
+              style={{width: 15, height: 15}}
             />
           )}
         </TouchableOpacity>
@@ -105,13 +105,14 @@ import {View,Text,Dimensions,TouchableOpacity,Image,TextInput,FlatList} from 're
                       borderColor: '#8e8e8e',
                     }}
                     onPress={() => {
-                      setSelectedItem(item);
-                      props.rtndata(item);
+                      setSelectedItem(item.emp);
+                      props.rtndata(item.emp);
                       setClicked(!clicked);
                       // onSearch('');
                       setSearch('');
                     }}>
-                    <Text style={{fontWeight: '600'}}>{item}</Text>
+                    <Text style={{fontWeight: '600'}}>{item.name}</Text>
+                    <Text style={{fontWeight: '600'}}>{item.emp}</Text>
                   </TouchableOpacity>
                 );
               }}

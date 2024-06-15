@@ -1,86 +1,79 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, KeyboardAvoidingView, Text, View, Button,Alert, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { FlatList, Image, KeyboardAvoidingView, Text, View, Button, Alert, TextInput, TouchableHighlight, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 import Dropdown from './Dropdown';
 
 
 
-const reference = database().ref('/user/emp');
+const reference = database().ref('/Construction/projects');
 
 const regions = ["Odisha", "ER_1", "ER_2", "CC"]
 const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
-const designations = ["Executive", "NonExecutive", "AMC security"]
-const Registration = (props) => {
- 
-  const [userdata, setuserdata] = useState(null);
+const AddMaterials = (props) => {
   const [name, setname] = useState(null);
-  const [designation, setdesignation] = useState(null);
+  const [loa, setLoa] = useState(null);
+  const [loadt, setLoaDt] = useState(null);
+  const [sap, setSap] = useState(null);
+  const [contractPrice, setContractPrice] = useState(null);
+  const [workPeriod, setWorkPeriod] = useState(null);
+  const [bg, setBg] = useState(null);
+  const [schDt, setschDt] = useState(null);
+  const [siteLocation, setsiteLocation] = useState(null);
   const [region, setregion] = useState(null);
   const [substation, setsubstation] = useState(null);
-  const [unit, setunit] = useState(null);
-  const [emp, setemp] = useState(null);
-  const [password, setpassword] = useState(null);
-  const [cnfPassword, setCnfPassword] = useState(null);
-  const [placeOfPosting, setPlaceOfPosting] = useState(null);
- 
+
   function getRegion(sltddata) {
     setregion(sltddata);
   }
   function getsubstation(sltddata) {
     setsubstation(sltddata);
   }
-  function getdesignation(sltddata) {
-    setdesignation(sltddata);
-  }
 
-
-  
   const saveData = async () => {
-    if(name && designation && emp && region && substation && placeOfPosting && password && cnfPassword){
-    if (password == cnfPassword) {
+    if (name && loa && loadt && sap && contractPrice && workPeriod && bg && schDt && siteLocation && region && substation) {
+
       try {
         const response = await database()
-          .ref('/users/' + emp)
+          .ref('/Construction/projects' + "/" + region + "/" + substation + "/" + sap)
           .set({
             name: name,
-            designation: designation,
-            emp: emp,
+            loa: loa,
+            loadt: loadt,
+            sap: sap,
+            contractPrice: contractPrice,
+            workPeriod: workPeriod,
+            bg: bg,
+            schDt: schDt,
+            siteLocation: siteLocation,
             region: region,
-            substation: substation,
-            placeOfPosting: placeOfPosting,
-            unit: unit,
-            password: password,
-            permission:false,
-            active:false,
-            onduty:false
+            substation: substation
           })
-          .then(() => { Alert.alert('Thank you',' Registration  successfully',[{Text:'ok', onPress:()=>{props.navigation.pop(2)}, }]);
-          setname(null);
-          setdesignation(null);
-          setemp(null);
-          setregion(null);
-          setsubstation(null);
-          setPlaceOfPosting(null);
-          setunit(null);
-          setCnfPassword(null);
-          setpassword(null);
+          .then(() => {
+            Alert.alert('Thank you', ' Registration  successfully', [{ Text: 'ok', onPress: () => { props.navigation.pop(2) }, }]);
+            setname(null);
+            setLoa(null);
+            setLoaDt(null);
+            setSap(null);
+            setContractPrice(null);
+            setWorkPeriod(null);
+            setBg(null);
+            setschDt(null);
+            setsiteLocation(null);
+            setregion(null);
+            setsubstation(null)
 
-        });
+          });
       } catch (error) {
         console.log(error);
       }
 
+
     }
     else {
-      Alert.alert('Warning','password and confirm password are not matched')[{Text:'ok'}]
-      
+      Alert.alert('Warning', 'please enter all parameters')[{ Text: 'ok' }]
     }
-  }
-  else{
-    Alert.alert('Warning','please enter all parameters')[{Text:'ok'}]
-  }
 
   }
   return (
@@ -94,17 +87,22 @@ const Registration = (props) => {
           </View>
 
           <View style={[styles.portion2, { flex: 5 }]}>
-
-            <Text style={styles.text}>Registration</Text>
-            <TextInput style={styles.txtinput} placeholder='Name' value={name} onChangeText={(value) => setname(value)} />
-            <TextInput style={styles.txtinput} placeholder='Designation' value={designation} onChangeText={(value) => setdesignation(value)} />
-            <TextInput style={styles.txtinput} placeholder='Employee No.' value={emp} onChangeText={(value) => setemp(value)} />
+          
+            <Text style={styles.text}>Add New Materials</Text>
             <Dropdown data={regions} rtndata={getRegion} />
             <Dropdown data={substations} rtndata={getsubstation} />
-            {/* <Dropdown data={designations} rtndata={getdesignation} /> */}
-            <TextInput style={styles.txtinput} placeholder='place of posting' value={placeOfPosting} onChangeText={(value) => setPlaceOfPosting(value)} />
-            <TextInput style={styles.txtinput} placeholder='password' value={password} onChangeText={(value) => setpassword(value)} />
-            <TextInput style={styles.txtinput} placeholder='confirm password' value={cnfPassword} onChangeText={(value) => setCnfPassword(value)} />
+            <TextInput style={styles.txtinput} placeholder='Name Of Work Package' value={name} onChangeText={(value) => setname(value)} />
+            <TextInput style={styles.txtinput} placeholder='LOA No.' value={loa} onChangeText={(value) => setLoa(value)} />
+            <TextInput style={styles.txtinput} placeholder='LOA date.' value={loadt} onChangeText={(value) => setLoaDt(value)} />
+            <TextInput style={styles.txtinput} placeholder='SAP PO No.' value={sap} onChangeText={(value) => setSap(value)} />
+            <TextInput style={styles.txtinput} placeholder='Contract Price.' value={contractPrice} onChangeText={(value) => setContractPrice(value)} />
+            <TextInput style={styles.txtinput} placeholder='Work Complition Period' value={workPeriod} onChangeText={(value) => setWorkPeriod(value)} />
+            <TextInput style={styles.txtinput} placeholder='BG/Security deposite amount' value={bg} onChangeText={(value) => setBg(value)} />
+            <TextInput style={styles.txtinput} placeholder='Schedule Date of Work Completion' value={schDt} onChangeText={(value) => setschDt(value)} />
+           
+
+            <TextInput style={styles.txtinput} placeholder='Site Location' value={siteLocation} onChangeText={(value) => setsiteLocation(value)} />
+
             <TouchableHighlight>
               <Text style={styles.custombutton}
                 onPress={() => saveData()}>submit</Text>
@@ -119,7 +117,7 @@ const Registration = (props) => {
   );
 }
 
-export default Registration;
+export default AddMaterials;
 const styles = StyleSheet.create({
 
   sectionContainer: {

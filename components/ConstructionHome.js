@@ -21,70 +21,45 @@ import Analysis from './Analysis';
 import GetLocation from 'react-native-get-location';
 import database from '@react-native-firebase/database';
 import Schedule from './Schedule';
-import ConstructionHome from './ConstructionHome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import NewProject from './NewProject';
+import MaterialEntry from './MaterialEntry';
+import MaterialStock from './MaterialStock';
+import MaterialOut from './MaterialOut';
+import Sfqp from './Sfqp';
+import AddMaterials from './AddMaterials';
+
+
 const stack = createNativeStackNavigator();
 
-const secIcons = [
-  {
-    id: 1,
-    icon: "Schedule"
-  },
-  {
-    id: 2,
-    icon: "Patrolling"
-  },
-  {
-    id: 3,
-    icon: "Details"
-  },
-  {
-    id: 4,
-    icon: "Abnormality"
-  }
 
-]
-const HomeScreen = (props) => {
+const ConstructionHome = (props) => {
   const [deactive, setDeactive] = useState(0);
   const [description, setDescription] = useState(props.route.params);
   const [spotdata, setspotdata] = useState([]);
   const [refresh, setRefresh] = useState(0);
-  const [userDetails , setUserDetails] = useState([]);
-  const[refLatitude, setRefLatitude] =useState(null)
-  const[refLongitude, setRefLongitude] =useState(null)
 
-  const getData = async () => {
-    try {
-     let user_details = await AsyncStorage.getItem('user_details');
-     user_details = JSON.parse(user_details);
-     setUserDetails(user_details);
-     console.log('storeedData',userDetails)
-    } catch (e) {
-      // saving error
-    }
-  };
-  useEffect(()=>{
-    getData();
-    if(userDetails.userID ===60065112){
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 50000,
-      })
-        .then(location => {
-          setRefLatitude(location.latitude);
-          console.log('Ref latitude', refLatitude);
-          setRefLongitude(location.longitude);  
-          console.log('Ref latitude', refLongitude);
-        })
-        .catch(error => {
-          const { code, message } = error;
-          console.warn(code, message);
-        })
-    }
-  },[]);
-  
-  
-   const loggingOut = async () => {
+  const homeFunctions = {
+    getDatabase: async () => {
+      let data = [];
+      try {
+
+        await database().ref('/spots/pan').once('value', snapshot => {
+
+          snapshot.forEach((child) => {
+            data.push(child.val());
+            //  console.log(data)
+            setspotdata(data);
+
+          })
+
+        }).then(() => console.log('Array Data', spotdata.filter(spot => { return spot.description == "Home", spot.id })));
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+    },
+    loggingOut: async () => {
       try {
         const response = await database()
           .ref('/users/' + description + '/active')
@@ -96,11 +71,47 @@ const HomeScreen = (props) => {
   
           });
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       }
   
+    },
+    resetSpot:()=>{
+      
+    },
+    gpsAcess : () => {
+      if (!spotdata) {
+        setRefresh(refresh+1);
+        homeFunctions.gpsAcess();
+      }
+      else{
+        GetLocation.getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 50000,
+        })
+        .then(location => {
+          console.log('spots',spotdata);
+          const latdiff =location.latitude-spotdata.filter(x => x.id == 107 ).latitude;
+          console.log('latdiff',latdiff);
+          const longdiff =location.longitude-spotdata.filter(x => x.id == 107 ).longitude;
+          console.log('longdiff',latdiff);
+         homeFunctions.resetSpot();
+          
+          
+        })
+        .catch(error => {
+          const { code, message } = error;
+          console.warn(code, message);
+        })
+      }
+
+
     }
-   
+
+
+
+
+    
+  }
  
 
 
@@ -120,7 +131,7 @@ const HomeScreen = (props) => {
         },
         {
           text: 'YES', onPress: () => {
-            loggingOut();
+            homeFunctions.loggingOut();
             BackHandler.exitApp()
           }
         },
@@ -135,14 +146,15 @@ const HomeScreen = (props) => {
 
     return () => backHandler.remove();
   }, []);
- 
+  useEffect(() => { homeFunctions.getDatabase() }, [refresh]);
+  // setInterval(()=>{gpsAcess()},900000)
 
 
   
 
   return (
     <View style={styles.sectionContainer}>
-      <Text >User :-  {userDetails.userID} ,{refLatitude},{refLongitude} </Text>
+
       <View style={[styles.portion1, { flex: 1 }]} >
         <Text style={styles.logo}>  </Text>
         <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
@@ -151,37 +163,47 @@ const HomeScreen = (props) => {
       <View style={[styles.portion2, { flex: 3 }]}>
 
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('Patrolling', { Patrolling })}>
+          onPress={() => props.navigation.navigate('NewProject', { NewProject })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/securityPatrolling.png')} />
+            <Image style={[styles.imageicon]} source={require('./image/newProject.jpg')} />
             <Text style={styles.custombutton}
-            >Patolling</Text>
+            >NewProject</Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('Schedule', { Schedule })}>
+          onPress={() => props.navigation.navigate('MaterialEntry', { MaterialEntry })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/shedule.png')} />
+            <Image style={[styles.imageicon]} source={require('./image/material.jpg')} />
             <Text style={styles.custombutton}
-            >Schedule</Text>
+            >Material Entry</Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('Analysis', { Analysis })}>
+          onPress={() => props.navigation.navigate('MaterialOut', { MaterialOut })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/analysis.png')} />
+            <Image style={[styles.imageicon]} source={require('./image/materialOut.jpg')} />
             <Text style={styles.custombutton}
-            >Analysis</Text>
+            >Material Out </Text>
+          </View>
+        </TouchableHighlight>
+       
+        <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
+          onPress={() => props.navigation.navigate('Sfqp', { Sfqp })}>
+          <View style={{ alignItems: 'center' }}>
+            <Image style={[styles.imageicon]} source={require('./image/MaterialStock.jpg')} />
+            <Text style={styles.custombutton}
+            >Material stock</Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('ConstructionHome', { ConstructionHome })}>
+          onPress={() => props.navigation.navigate('AddMaterials', { AddMaterials })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/constuction.jpg')} />
+            <Image style={[styles.imageicon]} source={require('./image/addmaterial.png')} />
             <Text style={styles.custombutton}
-            >Construction </Text>
+            >Add new Material</Text>
           </View>
         </TouchableHighlight>
+        
 
       </View>
       <View style={[styles.portion3, { flex: 1 }]}>
@@ -297,4 +319,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default HomeScreen;
+export default ConstructionHome;
