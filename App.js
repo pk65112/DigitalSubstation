@@ -46,7 +46,8 @@ import CivilMaintenance from './components/CivilMaintenance';
 import NewWorkOrder from './components/NewworkOrder';
 import PriorityAssign from './components/PriorityAssign';
 import PercentPriority from './components/PercentPriority';
-
+import GridSafeHome from './components/GridSafeHome';
+import ListOfSub from './components/ListOfSub';
 
 
 
@@ -92,6 +93,8 @@ const App = () => {
         <Stack.Screen name="NewWorkOrder" component={NewWorkOrder} />
         <Stack.Screen name="PriorityAssign" component={PriorityAssign} />
         <Stack.Screen name="PercentPriority" component={PercentPriority} />
+        <Stack.Screen name="GridSafeHome" component={GridSafeHome} />
+        <Stack.Screen name="ListOfSub" component={ListOfSub} />
        
 
       </Stack.Navigator>

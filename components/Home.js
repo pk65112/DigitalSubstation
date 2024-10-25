@@ -24,6 +24,8 @@ import Schedule from './Schedule';
 import ConstructionHome from './ConstructionHome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CivilMaintenance from './CivilMaintenance';
+import GridSafeHome from './GridSafeHome';
+import ListOfSub from './ListOfSub';
 
 
 
@@ -179,6 +181,14 @@ const HomeScreen = (props) => {
             <Image style={[styles.imageicon]} source={require('./image/civilOnM.jpg')} />
             <Text style={styles.custombutton}
             >Civil O & M </Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
+          onPress={() => props.navigation.navigate('GridSafeHome', { GridSafeHome })}>
+          <View style={{ alignItems: 'center' }}>
+            <Image style={[styles.imageicon]} source={require('./image/safety.jpg')} />
+            <Text style={styles.custombutton}
+            >Safe Grid </Text>
           </View>
         </TouchableHighlight>
 
