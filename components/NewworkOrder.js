@@ -4,58 +4,70 @@ import { FlatList, Image, KeyboardAvoidingView, Text, View, Button, Alert, TextI
 import SelectDropdown from 'react-native-select-dropdown';
 import database from '@react-native-firebase/database';
 import Dropdown from './Dropdown';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
+const reference = database().ref('/Construction/projects');
 
-
-const AddMaterials = (props) => {
-  const [show, setshow] = useState(false);
-  const [newMat, setnewMat] = useState(null);
-  const[matId,setMatid] = useState(null);
-  const[refresh,setRefresh]=useState(1)
-  useEffect(() => {
-    getDatabase();
-    
-  }, [refresh]);
-
-  const getDatabase = async () => {
-    try {
-      setshow(true)
-      await database().ref('/Material').orderByChild('matId').limitToLast(1).once('value', snapshot => {
-        console.log("lastMatId",snapshot);
-        snapshot.forEach((child) => {
-          setMatid(child.val().matId+1);
-        })
-        
-        
-  
-      }).then(() =>console.log( 'newmatId',matId) );
-    }
-    catch (err) {
-      console.log(err);
-    }
-
-    
-   
+const priorities = ["Emergency", "Volunerable", "Normal" ]
+const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const NewWorkOrder = (props) => {
+  const [name, setname] = useState(null);
+  const [details, setDetails] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [priority, setPriority] = useState(null);
+  const [userDetails , setUserDetails] = useState([]);
+  function getPriority(sltddata) {
+    setPriority(sltddata);
   }
-
+  const getData = async () => {
+    try {
+     let user_details = await AsyncStorage.getItem('user_details');
+     user_details = JSON.parse(user_details);
+     setUserDetails(user_details);
+     console.log('storeedData',userDetails)
+    } catch (e) {
+      // saving error
+    }
+  };
+  useEffect(()=>{
+ getData();
+  },[]);
 
   const saveData = async () => {
-   
-    if (newMat) {
+    if (name && details && location && priority ) {
+      let date = new Date();
+      const dd =date.getDate();
+     const mm =date.getMonth();
+      const yyyy =date.getFullYear();
+      const proposedDate =dd + "/"+mm+"/"+yyyy;
+      const proposedTime =date.getTime();
+
       try {
-        const response = await database()
-          .ref('/Material'+"/" + matId)
-          .set({
-            description:newMat,
-            matId:matId,
+        const response =  database()
+          .ref('/CivilOnM/workProposal' + "/" )
+          .push();
+          const proposedId =response.key
+          await response.set(
+          {
+            name: name,
+            details: details,
+            location: location,
+            priority: priority,
+            proposedDate:proposedDate,
+            proposedTime:proposedTime,
+            proposedBy:userDetails.userID,
+            proposeId:proposedId
+           
           })
           .then(() => {
-            Alert.alert('Thank you', ' Material Entered successfully', [{ Text: 'ok', onPress: () => { props.navigation.pop(2) }, }]);
-            setnewMat(null);
-            setRefresh (refresh+1)
+            console.log('proposed key', proposedId)
+            Alert.alert('Thank you', ' work proposal is initiated', [{ Text: 'ok', onPress: () => { props.navigation.pop(2) }, }]);
+            setname(null);
+            setDetails(null);
+            setLocation(null);
+            setPriority(null);
             
-
           });
       } catch (error) {
         console.log(error);
@@ -79,11 +91,13 @@ const AddMaterials = (props) => {
           </View>
 
           <View style={[styles.portion2, { flex: 5 }]}>
-          
-            <Text style={styles.text}>Add New Materials</Text>
-            
-            <TextInput style={styles.txtinput} placeholder='Material Description' value={newMat} onChangeText={(value) => setnewMat(value)} />
-           
+
+            <Text style={styles.text}>Initiate a Work Proposal</Text>
+            <TextInput style={styles.txtinput} placeholder='Short Name Of Work ' value={name} onChangeText={(value) => setname(value)} />
+            <TextInput style={styles.txtinput} placeholder='Details of work.' value={details} onChangeText={(value) => setDetails(value)} />
+            <TextInput style={styles.txtinput} placeholder='Location.' value={location} onChangeText={(value) => setLocation(value)} />
+            <Text >Set Priority: -</Text>
+            <Dropdown data={priorities} rtndata={getPriority} />
             <TouchableHighlight>
               <Text style={styles.custombutton}
                 onPress={() => saveData()}>submit</Text>
@@ -98,7 +112,7 @@ const AddMaterials = (props) => {
   );
 }
 
-export default AddMaterials;
+export default NewWorkOrder;
 const styles = StyleSheet.create({
 
   sectionContainer: {

@@ -42,6 +42,13 @@ import MaterialOut from './components/MaterialOut';
 import Sfqp from './components/Sfqp';
 import MaterialStock from './components/MaterialStock';
 import AddMaterials from './components/AddMaterials';
+import CivilMaintenance from './components/CivilMaintenance';
+import NewWorkOrder from './components/NewworkOrder';
+import PriorityAssign from './components/PriorityAssign';
+import PercentPriority from './components/PercentPriority';
+
+
+
 
 
 
@@ -81,6 +88,11 @@ const App = () => {
         <Stack.Screen name="Sfqp" component={Sfqp} />
         <Stack.Screen name="MaterialStock" component={MaterialStock} />
         <Stack.Screen name="AddMaterials" component={AddMaterials} />
+        <Stack.Screen name="CivilMaintenance" component={CivilMaintenance} />
+        <Stack.Screen name="NewWorkOrder" component={NewWorkOrder} />
+        <Stack.Screen name="PriorityAssign" component={PriorityAssign} />
+        <Stack.Screen name="PercentPriority" component={PercentPriority} />
+       
 
       </Stack.Navigator>
     </NavigationContainer>

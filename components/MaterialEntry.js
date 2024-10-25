@@ -17,11 +17,11 @@ const description = [{ label: 'Fine Aggregate', value: '1' },
 { label: 'Steel Bar 8mm', value: '6' },
 { label: 'Steel Bar 10mm', value: '7' },
 { label: 'Steel Bar 12mm', value: '8' },
-{ label: 'Steel Bar 16mm', value: '8' },
-{ label: 'Steel Bar 20mm', value: '8' },
-{ label: 'Bricks', value: '8' },
-{ label: 'Cement', value: '8' },
-{ label: 'Other', value: '8' },
+{ label: 'Steel Bar 16mm', value: '9' },
+{ label: 'Steel Bar 20mm', value: '10' },
+{ label: 'Bricks', value: '11' },
+{ label: 'Cement', value: '12' },
+{ label: 'Other', value: '13' },
  ]
 const unitType = [
   { label: "CUM", value: '1' },
@@ -29,6 +29,7 @@ const unitType = [
   { label: 'Each', value: '3' },
   { label: 'Liter', value: '4' },
   { label: 'Meter', value: '5' },
+  { label: 'Sq.Meter', value: '6' },
    ]
    const vehicleType = [
     { label: "Tractor", value: '1' },
@@ -60,7 +61,7 @@ const MaterialEntry = (props) => {
   const [substation, setsubstation] = useState(null);
   const [unit, setunit] = useState(null);
   const [qty, setQty] = useState(null);
-  
+  const[material,setMaterial]=useState(description);
  
   
   const [refresh, setRefresh] = useState(0);
@@ -72,6 +73,7 @@ const MaterialEntry = (props) => {
   const [increment, setIncrement] = useState(0);
   
   let data = [];
+  let datamat = [];
   let dataUser = [];
   
  
@@ -82,7 +84,7 @@ const MaterialEntry = (props) => {
   const getDatabase = async () => {
     try {
       setshow(true)
-      await database().ref('/Construction/projects/Odisha').once('value', snapshot => {
+      await database().ref('/Construction/projects/Odisha').on('value', snapshot => {
         console.log("snapshot",snapshot)
         snapshot.forEach((child) => {
           child.forEach((subchild =>{
@@ -102,7 +104,7 @@ const MaterialEntry = (props) => {
     try {
       setshow(true)
       await database().ref('/users').once('value', snapshot => {
-        console.log("snapshot",snapshot)
+        console.log("snapshotUser",snapshot)
         snapshot.forEach((child) => {
             setsubstation(child.val().substation)
             dataUser.push({'label':child.val().name , 'value':child.val().emp});
@@ -113,6 +115,21 @@ const MaterialEntry = (props) => {
         })
   
       }).then(() =>console.log( 'Staff Data',dataUser) );
+    }
+    catch (err) {
+      console.log(err);
+    }
+    try {
+      setshow(true)
+      await database().ref('/Material').once('value', snapshot => {
+        console.log("snapshotMaterial",snapshot)
+        snapshot.forEach((child) => {
+            datamat.push({'label':child.val().description , 'value':child.val().matId});
+             console.log("material",datamat)
+              setMaterial(datamat);
+        })
+  
+      }).then(() =>console.log( 'Array Data',data) );
     }
     catch (err) {
       console.log(err);
@@ -226,7 +243,7 @@ const MaterialEntry = (props) => {
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          data={description}
+          data={material}
           search
           maxHeight={300}
           labelField="label"

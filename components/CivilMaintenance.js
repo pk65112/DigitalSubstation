@@ -27,19 +27,23 @@ import MaterialStock from './MaterialStock';
 import MaterialOut from './MaterialOut';
 import Sfqp from './Sfqp';
 import AddMaterials from './AddMaterials';
+import NewWorkOrder from './NewworkOrder';
+import PriorityAssign from './PriorityAssign';
 
 
 
 const stack = createNativeStackNavigator();
 
 
-const ConstructionHome = (props) => {
+const CivilMaintenance = (props) => {
   const [deactive, setDeactive] = useState(0);
   const [description, setDescription] = useState(props.route.params);
   const [spotdata, setspotdata] = useState([]);
   const [refresh, setRefresh] = useState(0);
-
-  const homeFunctions = {
+  const [pendingWork, setPendingWork] = useState([{ sl: 1, des: "grass cutting",loc:"lawn", priority: 60 },
+  { sl: 2, des: "penting",loc:"FF", priority: 70 }, { sl: 3, des: "cleaning",loc:"Battery Room", priority: 40 },
+  { sl: 4, des: "grass cutting",loc:"control room", priority: 20 }])
+  const getPendingWork = {
     getDatabase: async () => {
       let data = [];
       try {
@@ -69,153 +73,133 @@ const ConstructionHome = (props) => {
           .then(() => {
             setDeactive(deactive + 1)
             Alert.alert('Thank you', ' you are logged out', [{ Text: 'ok', onPress: () => { props.navigation.pop(1) }, }]);
-  
+
           });
       } catch (error) {
         console.log(error);
       }
-  
+
     },
-    resetSpot:()=>{
-      
+    resetSpot: () => {
+
     },
-    gpsAcess : () => {
+    gpsAcess: () => {
       if (!spotdata) {
-        setRefresh(refresh+1);
+        setRefresh(refresh + 1);
         homeFunctions.gpsAcess();
       }
-      else{
+      else {
         GetLocation.getCurrentPosition({
           enableHighAccuracy: true,
           timeout: 50000,
         })
-        .then(location => {
-          console.log('spots',spotdata);
-          const latdiff =location.latitude-spotdata.filter(x => x.id == 107 ).latitude;
-          console.log('latdiff',latdiff);
-          const longdiff =location.longitude-spotdata.filter(x => x.id == 107 ).longitude;
-          console.log('longdiff',latdiff);
-         homeFunctions.resetSpot();
-          
-          
-        })
-        .catch(error => {
-          const { code, message } = error;
-          console.warn(code, message);
-        })
+          .then(location => {
+            console.log('spots', spotdata);
+            const latdiff = location.latitude - spotdata.filter(x => x.id == 107).latitude;
+            console.log('latdiff', latdiff);
+            const longdiff = location.longitude - spotdata.filter(x => x.id == 107).longitude;
+            console.log('longdiff', latdiff);
+            homeFunctions.resetSpot();
+
+
+          })
+          .catch(error => {
+            const { code, message } = error;
+            console.warn(code, message);
+          })
       }
-
-
     }
-
-
-
-
-    
   }
- 
-
-
-
-
-
-
-
-
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {
-          text: 'YES', onPress: () => {
-            homeFunctions.loggingOut();
-            BackHandler.exitApp()
-          }
-        },
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
-  useEffect(() => { homeFunctions.getDatabase() }, [refresh]);
+  // useEffect(() => { homeFunctions.getDatabase() }, [refresh]);
   // setInterval(()=>{gpsAcess()},900000)
-
-
-  
-
   return (
     <View style={styles.sectionContainer}>
 
-      <View style={[styles.portion1, { flex: 1 }]} >
+      <View style={[styles.portion1,]} >
         <Text style={styles.logo}>  </Text>
         <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
         <Text style={styles.logo}> </Text>
       </View>
-      <View style={[styles.portion2, { flex: 3 }]}>
+      <Text style={{ color: "blue", paddingLeft: 10 }}>Work Notification :- </Text>
+      <View style={[styles.portion2,]}>
 
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('NewProject', { NewProject })}>
+          onPress={() => props.navigation.navigate('NewWorkOrder', { NewWorkOrder })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/newProject.jpg')} />
+            <Image style={[styles.imageicon]} source={require('./image/createWorkNotification.png')} />
             <Text style={styles.custombutton}
-            >NewProject</Text>
+            >create New</Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('MaterialEntry', { MaterialEntry })}>
+          onPress={() => props.navigation.navigate('PriorityAssign', { PriorityAssign })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/material.jpg')} />
+            <Image style={[styles.imageicon]} source={require('./image/assignPriority.jpg')} />
             <Text style={styles.custombutton}
-            >Material Entry</Text>
-          </View>
-        </TouchableHighlight>
-        <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
-          onPress={() => props.navigation.navigate('MaterialEntry', { MaterialEntry })}>
-          <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/material.jpg')} />
-            <Text style={styles.custombutton}
-            >Material Issue</Text>
+            >Assign Priority</Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
           onPress={() => props.navigation.navigate('MaterialOut', { MaterialOut })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/materialOut.jpg')} />
+            <Image style={[styles.imageicon]} source={require('./image/workCompleted.png')} />
             <Text style={styles.custombutton}
-            >Material Out </Text>
+            >Completed </Text>
           </View>
         </TouchableHighlight>
-       
+
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
           onPress={() => props.navigation.navigate('Sfqp', { Sfqp })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/MaterialStock.jpg')} />
+            <Image style={[styles.imageicon]} source={require('./image/hold.png')} />
             <Text style={styles.custombutton}
-            >Material stock</Text>
+            >Hold</Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
           onPress={() => props.navigation.navigate('AddMaterials', { AddMaterials })}>
           <View style={{ alignItems: 'center' }}>
-            <Image style={[styles.imageicon]} source={require('./image/addmaterial.png')} />
+            <Image style={[styles.imageicon]} source={require('./image/rejected.png')} />
             <Text style={styles.custombutton}
-            >Add new Material</Text>
+            >Rejected</Text>
           </View>
         </TouchableHighlight>
-        
+
 
       </View>
-      <View style={[styles.portion3, { flex: 1 }]}>
+      <Text style={{ color: "blue", paddingLeft: 10 }}>Pending works on priority Basis :- </Text>
+      <View style={{borderWidth:1,borderColor:'pink',borderRadius:10}}>
+        <View style={[styles.portion2,]}>
+
+          <Text style={{ flex: 1, color: "black" }}>Sl. No</Text>
+          <Text style={{ flex: 4, color: "black" }} >work description</Text>
+          <Text style={{ flex: 2, color: "black" }} >location</Text>
+          <Text style={{ flex: 1, color: "black" }}>priority</Text>
+        </View>
+        <FlatList
+          data={pendingWork}
+          renderItem={Item => {
+            console.log('renderItem', Item)
+
+            return (
+              <View style={[styles.portion2,]}>
+
+                <Text style={{ flex: 1, color: "red" }}> {Item.item.sl}</Text>
+                <Text style={{ flex: 4, color: "red" }} >{Item.item.des}</Text>
+                <Text style={{ flex: 2, color: "red" }} >{Item.item.loc}</Text>
+                <Text style={{ flex: 1, color: "red" }}>{Item.item.priority}</Text>
+              </View>
+
+
+
+            )
+
+          }}
+          keyExtractor={item => item.id}
+
+        />
+      </View>
+      <View style={[styles.portion3,]}>
 
       </View>
 
@@ -235,17 +219,20 @@ const styles = StyleSheet.create({
   portion1: {
     paddingHorizontal: 24,
     flexDirection: 'row',
-
-
+    paddingVertical: 20,
     alignItems: 'center',
     justifyContent: 'center'
 
   },
   portion2: {
-    margin: 30,
+    margin:4,
     flexDirection: 'row',
     flexWrap: 'wrap',
-
+    
+    
+   
+    paddingBottom: 10,
+    justifyContent: 'center'
 
   },
   portion3: {
@@ -303,11 +290,11 @@ const styles = StyleSheet.create({
   custombutton: {
     borderColor: 'red',
     color: 'blue',
-    fontSize: 15,
+    fontSize: 10,
     textAlign: 'center',
   },
   imageicon: {
-    height: 80, width: 50,
+    height: 40, width: 40,
     backgroundColor: 'white'
 
   },
@@ -328,4 +315,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ConstructionHome;
+export default CivilMaintenance;

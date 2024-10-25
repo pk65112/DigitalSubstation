@@ -23,6 +23,11 @@ import database from '@react-native-firebase/database';
 import Schedule from './Schedule';
 import ConstructionHome from './ConstructionHome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CivilMaintenance from './CivilMaintenance';
+
+
+
+
 const stack = createNativeStackNavigator();
 
 const secIcons = [
@@ -65,7 +70,7 @@ const HomeScreen = (props) => {
   };
   useEffect(()=>{
     getData();
-    if(userDetails.userID ===60065112){
+    if(userDetails.userID===60065112){}
       GetLocation.getCurrentPosition({
         enableHighAccuracy: true,
         timeout: 50000,
@@ -75,15 +80,39 @@ const HomeScreen = (props) => {
           console.log('Ref latitude', refLatitude);
           setRefLongitude(location.longitude);  
           console.log('Ref latitude', refLongitude);
+          interval
         })
         .catch(error => {
           const { code, message } = error;
           console.warn(code, message);
         })
-    }
+    
   },[]);
-  
-  
+  const interval = setInterval(() => {
+    refLocationUpdatate();
+}, 1000000);
+  const refLocationUpdatate = async()=>{
+    try {
+      const response = await database()
+        .ref('/ReferenceLocation/'  + '/latitude')
+        .set(refLatitude
+        )
+        ;
+    } catch (error) {
+      console.log(error); 
+    }
+    try {
+      const response = await database()
+        .ref('/ReferenceLocation/'  + '/longitude')
+        .set(refLongitude
+        )
+        ;
+    } catch (error) {
+      console.log(error); 
+    }
+
+
+  }
    const loggingOut = async () => {
       try {
         const response = await database()
@@ -102,44 +131,6 @@ const HomeScreen = (props) => {
     }
    
  
-
-
-
-
-
-
-
-
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {
-          text: 'YES', onPress: () => {
-            loggingOut();
-            BackHandler.exitApp()
-          }
-        },
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
- 
-
-
-  
-
   return (
     <View style={styles.sectionContainer}>
       <Text >User :-  {userDetails.userID} ,{refLatitude},{refLongitude} </Text>
@@ -180,6 +171,14 @@ const HomeScreen = (props) => {
             <Image style={[styles.imageicon]} source={require('./image/constuction.jpg')} />
             <Text style={styles.custombutton}
             >Construction </Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
+          onPress={() => props.navigation.navigate('CivilMaintenance', { CivilMaintenance })}>
+          <View style={{ alignItems: 'center' }}>
+            <Image style={[styles.imageicon]} source={require('./image/civilOnM.jpg')} />
+            <Text style={styles.custombutton}
+            >Civil O & M </Text>
           </View>
         </TouchableHighlight>
 
