@@ -40,9 +40,8 @@ const GridSafeHome = (props) => {const [deactive, setDeactive] = useState(0);
     const [description, setDescription] = useState(props.route.params);
     const [spotdata, setspotdata] = useState([]);
     const [refresh, setRefresh] = useState(0);
-    const [pendingWork, setPendingWork] = useState([{ sl: 1, des: "grass cutting",loc:"lawn", priority: 60 },
-    { sl: 2, des: "penting",loc:"FF", priority: 70 }, { sl: 3, des: "cleaning",loc:"Battery Room", priority: 40 },
-    { sl: 4, des: "grass cutting",loc:"control room", priority: 20 }])
+    const [pendingWork, setPendingWork] = useState([{ sl: 1, des: "Pan-Bpd ckt-1",loc:"14:00 hr",date:"28-10-24" ,priority: 5 },
+    ])
     const getPendingWork = {
       getDatabase: async () => {
         let data = [];
@@ -153,7 +152,7 @@ const GridSafeHome = (props) => {const [deactive, setDeactive] = useState(0);
         <Text style={{ color: "blue", paddingLeft: 10 }}>Ongoing ShutDown Summary :- </Text>
         <View style={{borderWidth:1,borderColor:'pink',borderRadius:10}}>
           <View style={[styles.portion2,]}>
-  
+          
             <Text style={{ flex: 1, color: "black" }}>Sl. No</Text>
             <Text style={{ flex:8, color: "black" }} >Line / Equipment</Text>
             <Text style={{ flex: 4, color: "black" }} >Start Time</Text>
@@ -161,6 +160,65 @@ const GridSafeHome = (props) => {const [deactive, setDeactive] = useState(0);
             <Text style={{ flex: 2, color: "black" }}>T.Hr.</Text>
           </View>
           <FlatList
+            data={pendingWork}
+            renderItem={Item => {
+              console.log('renderItem', Item)
+  
+              return (
+                <View style={[styles.portion2,]}>
+  
+                  <Text style={{ flex: 1, color: "red" }}> {Item.item.sl}</Text>
+                  <Text style={{ flex: 4, color: "red" }} >{Item.item.des}</Text>
+                  <Text style={{ flex: 2, color: "red" }} >{Item.item.loc}</Text>
+                  <Text style={{ flex: 2, color: "red" }} >{Item.item.date}</Text>
+                  <Text style={{ flex: 1, color: "red" }}>{Item.item.priority}</Text>
+                </View>
+  
+  
+  
+              )
+  
+            }}
+            keyExtractor={item => item.id}
+  
+          />
+          
+        </View>
+        <View style={{borderWidth:1,borderColor:'pink',borderRadius:10}}>
+          <View style={[styles.portion3,]}>
+          <Text style={{ flex: 1,textAlign: 'center', color: "blue" }}>pan</Text>
+          <Image style={{flex:1,height: 70}} source={require('./image/stLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/tLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/sltLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/stLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/stLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/stLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/sltLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/stLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/tLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/stLine.png')} />
+          <Text style={{ flex: 1,textAlign: 'center', color: "blue" }}>BPD</Text>
+          
+            
+          </View>
+          <View style={[styles.portion3,]}>
+          <Text style={{ flex: 1,textAlign: 'center', color: "blue" }}></Text>
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/vLine.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/clEarth.png')} />
+          <Image style={{flex:1,height: 70}} source={require('./image/blank.png')} />
+          
+          <Text style={{ flex: 1,textAlign: 'center', color: "blue" }}></Text>
+          
+            
+          </View>
+          {/* <FlatList
             data={pendingWork}
             renderItem={Item => {
               console.log('renderItem', Item)
@@ -181,7 +239,8 @@ const GridSafeHome = (props) => {const [deactive, setDeactive] = useState(0);
             }}
             keyExtractor={item => item.id}
   
-          />
+          /> */}
+          
         </View>
         <View style={[styles.portion3,]}>
   
@@ -216,6 +275,14 @@ const GridSafeHome = (props) => {const [deactive, setDeactive] = useState(0);
       
      
       paddingBottom: 10,
+      justifyContent: 'center'
+  
+    },
+    portion3: {
+      margin:4,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      
       justifyContent: 'center'
   
     },

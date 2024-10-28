@@ -24,7 +24,9 @@ const ListOfSub = (props) => {
                 <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
                 <Text style={styles.logo}> </Text>
             </View>
-            <Text style={styles.text}>Choose Your Substation</Text>
+            <Text style={styles.text}>Choose Your Substation
+                
+            </Text>
             <View style={[styles.portion2, { flex: 6 }]}>
 
                 <FlatList
