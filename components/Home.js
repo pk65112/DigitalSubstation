@@ -26,6 +26,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CivilMaintenance from './CivilMaintenance';
 import GridSafeHome from './GridSafeHome';
 import ListOfSub from './ListOfSub';
+import LineConstructionHome from './LineConstructionHome ';
+
 
 
 
@@ -70,26 +72,26 @@ const HomeScreen = (props) => {
       // saving error
     }
   };
-  useEffect(()=>{
-    getData();
-    if(userDetails.userID===60065112){}
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 50000,
-      })
-        .then(location => {
-          setRefLatitude(location.latitude);
-          console.log('Ref latitude', refLatitude);
-          setRefLongitude(location.longitude);  
-          console.log('Ref latitude', refLongitude);
-          interval
-        })
-        .catch(error => {
-          const { code, message } = error;
-          console.warn(code, message);
-        })
+  // useEffect(()=>{
+  //   getData();
+  //   if(userDetails.userID===60065112){}
+  //     GetLocation.getCurrentPosition({
+  //       enableHighAccuracy: true,
+  //       timeout: 50000,
+  //     })
+  //       .then(location => {
+  //         setRefLatitude(location.latitude);
+  //         console.log('Ref latitude', refLatitude);
+  //         setRefLongitude(location.longitude);  
+  //         console.log('Ref latitude', refLongitude);
+  //         interval
+  //       })
+  //       .catch(error => {
+  //         const { code, message } = error;
+  //         console.warn(code, message);
+  //       })
     
-  },[]);
+  // },[]);
   const interval = setInterval(() => {
     refLocationUpdatate();
 }, 1000000);
@@ -165,6 +167,14 @@ const HomeScreen = (props) => {
             <Image style={[styles.imageicon]} source={require('./image/analysis.png')} />
             <Text style={styles.custombutton}
             >Analysis</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight activeOpacity={0.6} style={styles.iconset}
+          onPress={() => props.navigation.navigate('LineConstructionHome', { LineConstructionHome })}>
+          <View style={{ alignItems: 'center' }}>
+            <Image style={[styles.imageicon]} source={require('./image/lineConstruction.jpg')} />
+            <Text style={styles.custombutton}
+            >Construction </Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight activeOpacity={0.6} style={styles.iconset}

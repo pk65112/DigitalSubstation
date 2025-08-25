@@ -6,13 +6,13 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import database from '@react-native-firebase/database';
-import Geolocation from 'react-native-geolocation-service';
-import LineSelection from './LineSelection';
+import Blank from './Blank';
+
 const stack = createNativeStackNavigator();
-const reference = database().ref('/spots/pan');
-const ListOfSub = (props) => {
+
+const LineIsoOperation = (props) => {
    
-    let data = ["Pandiabili","Baripada","Angul","Sundargarh","Rourkela","Rengali","Kaniha","Keonjhar","Bolangir","Indravati","Jeypore"];
+    let data = ["Pan_Bpd_400KV_CB","Pan_Bpd_400KV_Line_Iso","Pan_Bpd_400KV_Line_Earth_Switch"];
    
     
 
@@ -23,9 +23,7 @@ const ListOfSub = (props) => {
                 <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
                 <Text style={styles.logo}> </Text>
             </View>
-            <Text style={styles.text}>Choose Your Substation
-                
-            </Text>
+            <Text style={styles.text}>Choose a line for Operation</Text>
             <View style={[styles.portion2, { flex: 6 }]}>
 
                 <FlatList
@@ -39,8 +37,8 @@ const ListOfSub = (props) => {
                                
                                 
                                 <View style={{ flexDirection: 'row', }}>
-                                    < TouchableHighlight style={{ flex: 1 }} onPress={() => props.navigation.navigate('LineSelection', Item.item, { LineSelection })}>
-                                        <Text>{Item.item}</Text>
+                                    < TouchableHighlight style={{ flex: 1 }} onPress={() => props.navigation.navigate('PercentPriority', Item.item, { PercentPriority })}>
+                                        <Text style={{color:"black"}}>{Item.item}</Text>
                                     </TouchableHighlight>
                                     
                                 </View>
@@ -128,4 +126,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ListOfSub;
+export default LineIsoOperation;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GetLocation from 'react-native-get-location'
 import {
-  StyleSheet, ActivityIndicator,Alert, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
+  StyleSheet, ActivityIndicator, Alert, Text, TextInput, View, Dimensions, Image, FlatList, TouchableHighlight, ViewComponent, Button,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -14,54 +14,54 @@ const reference = database().ref('/spots/pan');
 
 const Patrolling = (props) => {
   const [spotdata, setspotdata] = useState([]);
-  const[filterdata,setFilterData] = useState([]);
+  const [filterdata, setFilterData] = useState([]);
   const [lati, setlati] = useState(null);
-  const [long, setlong] = useState(null); 
+  const [long, setlong] = useState(null);
   const [refresh, setRefresh] = useState(0);
   const [show, setshow] = useState(false);
   const [find, setFind] = useState(0)
 
   let data = [];
- 
+
   useEffect(() => {
     getDatabase();
-    
+
   }, [refresh]);
-  
-
- const autoRefresh=()=>{
-
-  setTimeout(() => {
-    if(data==null){
-      getDatabase();
-    }
-    else{
-      setshow(false);
-    }
-  }, 6000);
- }
 
 
-  const getLocation= ()=>{
+  const autoRefresh = () => {
+
+    setTimeout(() => {
+      if (data == null) {
+        getDatabase();
+      }
+      else {
+        setshow(false);
+      }
+    }, 6000);
+  }
+
+
+  const getLocation = () => {
     getDatabase();
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 50000,
     })
       .then(location => {
-        console.log('spots',spotdata);
-         const firstStgFltr = spotdata.filter(x => x.latitude >= location.latitude - 0.0090
-           && x.latitude <= location.latitude + 0.0090 && x.longitude >= location.longitude - 0.0090 
-           && x.longitude <= location.longitude + 0.0090 );
-        console.log('firstStgFltr',firstStgFltr);
-        
-       
+        console.log('spots', spotdata);
+        const firstStgFltr = spotdata.filter(x => x.latitude >= location.latitude - 0.0090
+          && x.latitude <= location.latitude + 0.0090 && x.longitude >= location.longitude - 0.0090
+          && x.longitude <= location.longitude + 0.0090);
+        console.log('firstStgFltr', firstStgFltr);
+
+
         setFilterData(firstStgFltr);
-        
-        
+
+
         console.log(location);
-        console.log('filtered Data',filterdata)
-        
+        console.log('filtered Data', filterdata)
+
       })
       .catch(error => {
         const { code, message } = error;
@@ -69,26 +69,26 @@ const Patrolling = (props) => {
       })
   }
 
-const getDatabase = async () => {
-  try {
-    setshow(true)
-    await database().ref('/spots/pan').once('value', snapshot => {
-      
-      snapshot.forEach((child) => {
-        data.push(child.val());
+  const getDatabase = async () => {
+    try {
+      setshow(true)
+      await database().ref('/spots/pan').once('value', snapshot => {
+
+        snapshot.forEach((child) => {
+          data.push(child.val());
           //  console.log(data)
-            setspotdata(data);
+          setspotdata(data);
 
-      })
+        })
 
-    }).then(() =>console.log( 'Array Data',data) );
+      }).then(() => console.log('Array Data', data));
+    }
+    catch (err) {
+      console.log(err);
+    }
+    autoRefresh();
   }
-  catch (err) {
-    console.log(err);
-  }
-  autoRefresh();
-}
- 
+
 
   const Item = ({ title }) => (
     <View style={styles.item}>
@@ -105,18 +105,18 @@ const getDatabase = async () => {
       </View>
 
       <View style={[styles.portion2, { flex: 3 }]}>
-        
+
         <FlatList
           data={filterdata}
           renderItem={Item => {
             console.log('renderItem', Item)
 
             return (
-              <View style ={{backgroundColor:'pink', padding:8, margin:4, borderRadius:8,}}>
-                < TouchableHighlight onPress={ () => props.navigation.navigate('Observations',Item.item.description ,{ Observations })
-                 
- }>
-                  <Text style={{color:'black'}}>{Item.item.description} {'>>>'}</Text>
+              <View style={{ backgroundColor: 'pink', padding: 8, margin: 4, borderRadius: 8, }}>
+                < TouchableHighlight onPress={() => props.navigation.navigate('Observations', Item.item.description, { Observations })
+
+                }>
+                  <Text style={{ color: 'black' }}>{Item.item.description} {'>>>'}</Text>
                 </TouchableHighlight>
               </View>
             )

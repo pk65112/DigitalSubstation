@@ -48,6 +48,14 @@ import PriorityAssign from './components/PriorityAssign';
 import PercentPriority from './components/PercentPriority';
 import GridSafeHome from './components/GridSafeHome';
 import ListOfSub from './components/ListOfSub';
+import LineSelection from './components/LineSelection';
+import TakeShutDown from './components/TakeShutDown';
+import LineIsoOperation from './components/LineIsoOperation';
+import LineConstructionHome from './components/LineConstructionHome ';
+import Notice from './components/Notice';
+import NewProjectLine from './components/NewProjectLine';
+import CreateNotice from './components/CreateNotice';
+
 
 
 
@@ -95,7 +103,14 @@ const App = () => {
         <Stack.Screen name="PercentPriority" component={PercentPriority} />
         <Stack.Screen name="GridSafeHome" component={GridSafeHome} />
         <Stack.Screen name="ListOfSub" component={ListOfSub} />
-       
+        <Stack.Screen name="LineSelection" component={LineSelection} />
+        <Stack.Screen name="TakeShutDown" component={TakeShutDown} />
+        <Stack.Screen name="LineIsoOperation" component={LineIsoOperation} />
+        <Stack.Screen name="LineConstructionHome" component={LineConstructionHome} />
+        <Stack.Screen name="Notice" component={Notice} />
+        <Stack.Screen name="NewProjectLine" component={NewProjectLine} />
+        <Stack.Screen name="CreateNotice" component={CreateNotice} />
+
 
       </Stack.Navigator>
     </NavigationContainer>
@@ -165,7 +180,21 @@ const Login = (props) => {
 
             }
             else {
-              Alert.alert('Warning', 'You are already logged in another device')[{ Text: 'ok' }]
+              try {
+                const response = await database()
+                  .ref('/users/' + userid + '/active')
+                  .set(true)
+                  .then(() => {
+                    props.navigation.navigate('Home',userid, { Home })
+                    setuserid(null);
+                    setpassword(null);
+                    storeData();
+                    getData();
+                  });
+              } catch (error) {
+                console.log(error);
+              }
+              // Alert.alert('Warning', 'You are already logged in another device')[{ Text: 'ok' }]
             }
           }
           else {

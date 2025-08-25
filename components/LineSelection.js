@@ -6,13 +6,14 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import database from '@react-native-firebase/database';
-import Geolocation from 'react-native-geolocation-service';
-import LineSelection from './LineSelection';
+import TakeShutDown from './TakeShutDown';
+
+
 const stack = createNativeStackNavigator();
-const reference = database().ref('/spots/pan');
-const ListOfSub = (props) => {
+
+const LineSelection = (props) => {
    
-    let data = ["Pandiabili","Baripada","Angul","Sundargarh","Rourkela","Rengali","Kaniha","Keonjhar","Bolangir","Indravati","Jeypore"];
+    let data = ["Pan_Bpd_400KV","Pan_Dbr_400KV","Pan_Msdl_1_400KV","Pan_Msdl_2_400KV"];
    
     
 
@@ -23,9 +24,7 @@ const ListOfSub = (props) => {
                 <Image style={[styles.logo, { flex: 2 }]} source={require('./image/power_grid_logo.png')} />
                 <Text style={styles.logo}> </Text>
             </View>
-            <Text style={styles.text}>Choose Your Substation
-                
-            </Text>
+            <Text style={styles.text}>Choose a line for Operation</Text>
             <View style={[styles.portion2, { flex: 6 }]}>
 
                 <FlatList
@@ -39,7 +38,7 @@ const ListOfSub = (props) => {
                                
                                 
                                 <View style={{ flexDirection: 'row', }}>
-                                    < TouchableHighlight style={{ flex: 1 }} onPress={() => props.navigation.navigate('LineSelection', Item.item, { LineSelection })}>
+                                    < TouchableHighlight style={{ flex: 1 }} onPress={() => props.navigation.navigate('TakeShutDown', Item.item, { TakeShutDown })}>
                                         <Text>{Item.item}</Text>
                                     </TouchableHighlight>
                                     
@@ -128,4 +127,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ListOfSub;
+export default LineSelection;
