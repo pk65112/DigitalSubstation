@@ -85,10 +85,16 @@ const Notice = (props) => {
         <Image style={[styles.logo, { flex: 1 }]} source={require('./image/power_grid_logo.png')} />
       
       </View>
-      <View style={[styles.topbox, { flex: 1, }]}>
+      <View style={[styles.topbox, { flex: 1,flexDirection:'row' }]}>
         <TouchableHighlight activeOpacity={0.6} 
           onPress={() => props.navigation.navigate('CreateNotice', { CreateNotice })}>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center' , marginRight:20}}>
+            <Text style={styles.custombutton}>Add Benificiary</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight activeOpacity={0.6} 
+          onPress={() => props.navigation.navigate('CreateNotice', { CreateNotice })}>
+          <View style={{ alignItems: 'center',marginLeft:20 }}>
             <Text style={styles.custombutton}
             >Create Notice</Text>
           </View>

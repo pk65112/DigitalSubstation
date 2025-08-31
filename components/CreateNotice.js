@@ -11,101 +11,113 @@ const reference = database().ref('/Construction/projects');
 
 const regions = ["Odisha", "ER_1", "ER_2", "CC"]
 const substations = ["Pandiabili", "Kaniha", "Indravati", "Rhq_bbsr"]
+const compDuring = [
+
+  { label: 'Foundation', value: '1' },
+  { label: 'Irrection', value: '2' },
+  { label: 'Stringing', value: '2' },
+  { label: 'Approch Road', value: '2' }
+
+];
+
+
 const districtlist = [
-  { label: 'Puri', value: '1' },
-  { label: 'Khurda', value: '2' },
-  { label: 'Cuttack', value: '3' }
+
+  { label: 'Khurda', value: '1' },
+  { label: 'Cuttack', value: '2' }
 ];
-const puriTahsilList = [
-  { label: 'Pipili', value: '1' },
-  { label: 'Delang', value: '2' }
-];
+
 const khurdaTahsilList = [
   { label: 'Khurda', value: '1' },
   { label: 'Jatni', value: '2' }]
-const cuttackTahsilList = [ { label: 'Cuttack', value: '1' },
-  { label: 'Banki', value: '2' }]
+const cuttackTahsilList = [
+  { label: 'Banki', value: '1' }]
+const riCircleKhurda = [
+  { label: 'Kuradhamala', value: '1' },
+  { label: 'Berunha', value: '2' },
+  { label: 'Paikatigiria', value: '3' },
+  { label: 'Haladia', value: '4' },
+]
+const ricicleJatni = [
+  { label: 'Benapanjuri', value: '1' },
+  { label: 'Taraboi', value: '2' },
+
+]
+
+
+const ricicleBanki = [
+  { label: 'Banki', value: '1' },
+]
+
+
+
 
 const CreateNotice = (props) => {
-  const [district, setDistrict] = useState(null);
-  const [tahasil, setTahasil] = useState(null);
   const [slctdTahasilList, setSlctdTahasilList] = useState([]);
-  const [slctdRI, setSlctdRIList] = useState([])
+  const [slctdRIList, setSlctdRIList] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
   const [value, setValue] = useState(null);
-  const [name, setname] = useState(null);
-  const [loa, setLoa] = useState(null);
-  const [loadt, setLoaDt] = useState(null);
-  const [sap, setSap] = useState(null);
-  const [contractPrice, setContractPrice] = useState(null);
-  const [workPeriod, setWorkPeriod] = useState(null);
-  const [bg, setBg] = useState(null);
-  const [schDt, setschDt] = useState(null);
-  const [siteLocation, setsiteLocation] = useState(null);
-  const [region, setregion] = useState(null);
-  const [substation, setsubstation] = useState(null);
 
-  function getRegion(sltddata) {
-    setregion(sltddata);
-  }
-  function getDistrict(sltddata) {
-    setDistrict(sltddata);
-  }
-  function getTahasil(sltddata) {
-    setTahasil(sltddata);
-  }
-  function getsubstation(sltddata) {
-    setsubstation(sltddata);
-  }
-  function tahasilSelection(value) {
-    setDistrict(value)
+  const [landOwnerName, setLandOwnerName] = useState(null);
+  const [district, setDistrict] = useState(null);
+  const [districtNo, setDistrictNo] = useState(null);
+  const [tahasil, setTahasil] = useState(null);
+  const [tahasilNo, setTahasilNo] = useState(null);
+  const [ri, setRi] = useState(null);
+  const [riNo, setRiNo] = useState(null);
+  const [mauza, setMauza] = useState(null);
+  const [jlNo, setJlNo] = useState(null);
+  const [plotNo, setSetPlotNo] = useState(null);
+  const [khatianNo, setKhatianNo] = useState(null);
+  const [Village, setVillage] = useState(null);
+  const [postOffice, setPostOffice] = useState(null);
+  const [ps, setPs] = useState(null);
+  const [pinNo, setPinNo] = useState(null);
+  
 
-    if (value === "Puri") {
-      setSlctdTahasilList(puriTahsil)
-    } else {
-      if (value == "Khurda") {
-        setSlctdTahasilList(khurdaTahsilList)
-      }
-      else {
-        setSlctdTahasilList(cuttackTahsilList)
-      }
 
-    }
-  }
+
 
   const saveData = async () => {
-    if (name && loa && loadt && sap && contractPrice && workPeriod && bg && schDt && siteLocation && region && substation) {
+    const plotNoString = plotNo.replace(/[^0-9]/g, '-') 
+    if (landOwnerName && district && tahasil && ri && mauza && jlNo && plotNo && khatianNo && Village && postOffice && ps && pinNo ) {
 
       try {
         const response = await database()
-          .ref('/LineConstruction/projects' + "/" + region + "/" + substation + "/" + sap)
+          .ref('/LineConstruction/400KV_NTPC_PAN'+'/' + districtNo + tahasilNo + riNo + mauza +plotNoString )
           .set({
-            name: name,
-            loa: loa,
-            loadt: loadt,
-            sap: sap,
-            contractPrice: contractPrice,
-            workPeriod: workPeriod,
-            bg: bg,
-            schDt: schDt,
-            siteLocation: siteLocation,
-            region: region,
-            substation: substation
+            landOwnerName: landOwnerName,
+            district: district,
+            tahasil: tahasil,
+            ri: ri,
+            mauza: mauza,
+            jlNo: jlNo,
+            plotNo: plotNo,
+            khatianNo: khatianNo,
+            Village: Village,
+            postOffice: postOffice,
+            ps: ps,
+            pinNo: pinNo,
+            
           })
           .then(() => {
             Alert.alert('Thank you', ' Registration  successfully', [{ Text: 'ok', onPress: () => { props.navigation.pop(2) }, }]);
-            setname(null);
-            setLoa(null);
-            setLoaDt(null);
-            setSap(null);
-            setContractPrice(null);
-            setWorkPeriod(null);
-            setBg(null);
-            setschDt(null);
-            setsiteLocation(null);
-            setregion(null);
-            setsubstation(null)
-
+            setLandOwnerName(null);
+            setDistrict(null);
+            setDistrictNo(null);
+            setTahasil(null);
+            setTahasilNo(null);
+            setRi(null);
+            setRiNo(null);
+            setMauza(null);
+            setJlNo(null);
+            setSetPlotNo(null);
+            setKhatianNo(null);
+            setVillage(null);
+            setPostOffice(null);
+            setPs(null);
+            setPinNo(null);
+           
           });
       } catch (error) {
         console.log(error);
@@ -120,15 +132,15 @@ const CreateNotice = (props) => {
   }
   return (
     <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column', borderWidth: 1, borderColor: 'pink', borderRadius: 15 }} behavior="padding" enabled>
-
       <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 5, }} >
         <Image style={[styles.logo, { flex: 1 }]} source={require('./image/power_grid_logo.png')} />
-        <Text style={styles.text}>Notice under Indian Telegraph Act of 1885</Text>
+        {/* <Text style={styles.text}>Notice under Indian Telegraph Act of 1885</Text> */}
+        <Text style={styles.text}>Register Benificiary</Text>
       </View>
       <View style={{ flex: 7, borderWidth: 1, borderColor: 'green', marginTop: 10, }} >
         <ScrollView>
           <Text style={styles.subtext}> 1 - Revinue details</Text>
-          <TextInput style={styles.txtinput} placeholder='Name Of Woner' value={name} onChangeText={(value) => setname(value)} />
+          <TextInput style={styles.txtinput} placeholder='Name Of LandWoner' value={landOwnerName} onChangeText={(value) => setLandOwnerName(value)} />
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ marginLeft: 20, color: 'blue', textAlign: 'center', paddingTop: 10 }} > District :</Text>
 
@@ -149,11 +161,13 @@ const CreateNotice = (props) => {
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
               onChange={item => {
-                setDistrict(item)
-                if (item.label=== "Puri") {
+                setDistrict(item.label);
+                setDistrictNo(item.value);
+
+                if (item.label === "Puri") {
                   setSlctdTahasilList(puriTahsilList)
                 } else {
-                  if (item.label=== "Khurda" ){
+                  if (item.label === "Khurda") {
                     setSlctdTahasilList(khurdaTahsilList)
                   }
                   else {
@@ -161,14 +175,12 @@ const CreateNotice = (props) => {
                   }
 
                 }
-
-
               }}
             />
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ marginLeft: 20, color: 'blue', textAlign: 'center', paddingTop: 10 }} > Tahasil :</Text>
-           <Dropdown
+            <Dropdown
               style={[styles.dropdown, isFocus && { borderColor: 'blue' }, { flex: 2 }]}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
@@ -185,56 +197,62 @@ const CreateNotice = (props) => {
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
               onChange={item => {
-                setTahasil(item)
+                setTahasil(item.label);
+                setTahasilNo(item.value);
                 
+                if (item.label === "Jatni") {
+                  setSlctdRIList(ricicleJatni);
+                } else {
+                  if (item.label === "Khurda") {
+                    setSlctdRIList(riCircleKhurda);
+                  }
+                  else {
+                    setSlctdRIList("Not Found")
+                  }
 
-
+                }
               }}
             />
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ marginLeft: 20, color: 'blue', textAlign: 'center', paddingTop: 10 }} > RI circle :</Text>
-            <Dropdown data={regions} rtndata={getRegion} />
+            <Dropdown
+              style={[styles.dropdown, isFocus && { borderColor: 'blue' }, { flex: 2 }]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={slctdRIList}
+              search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder={!isFocus ? 'Select item' : '...'}
+              searchPlaceholder="Search..."
+              value={value}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={item => {
+                setRi(item.label)
+                setRiNo(item.value)
+              }}
+            />
           </View>
-
-          <TextInput style={styles.txtinput} placeholder='Mauza.' value={loa} onChangeText={(value) => setLoa(value)} />
-          <TextInput style={styles.txtinput} placeholder='JL No.' value={loadt} onChangeText={(value) => setLoaDt(value)} />
-          <TextInput style={styles.txtinput} placeholder='Plot No' value={workPeriod} onChangeText={(value) => setWorkPeriod(value)} />
-          <TextInput style={styles.txtinput} placeholder='Khatian No' value={bg} onChangeText={(value) => setBg(value)} />
-          <Text style={styles.subtext}> 1 - Postal Adress</Text>
-          <TextInput style={styles.txtinput} placeholder='Name of Village./ Street No' value={loa} onChangeText={(value) => setLoa(value)} />
-          <TextInput style={styles.txtinput} placeholder='Post Office' value={sap} onChangeText={(value) => setSap(value)} />
-          <TextInput style={styles.txtinput} placeholder='PoliceStation' value={contractPrice} onChangeText={(value) => setContractPrice(value)} />
-          <TextInput style={styles.txtinput} placeholder='pin No.' value={contractPrice} onChangeText={(value) => setContractPrice(value)} />
-
-          <Dropdown data={substations} rtndata={getsubstation} />
-
-          <TextInput style={styles.txtinput} placeholder='Site Location' value={siteLocation} onChangeText={(value) => setsiteLocation(value)} />
-
+          <TextInput style={styles.txtinput} placeholder='Mauza.' value={mauza} onChangeText={(value) => setMauza(value)} />
+          <TextInput style={styles.txtinput} placeholder='JL No.' value={jlNo} onChangeText={(value) => setJlNo(value)} />
+          <TextInput style={styles.txtinput} placeholder='Plot No' value={plotNo} onChangeText={(value) => setSetPlotNo(value)} />
+          <TextInput style={styles.txtinput} placeholder='Khatian No' value={khatianNo} onChangeText={(value) => setKhatianNo(value.toString())} />
+          <Text style={styles.subtext}> 2 - Postal Adress</Text>
+          <TextInput style={styles.txtinput} placeholder='Name of Village./ Street No' value={Village} onChangeText={(value) => setVillage(value)} />
+          <TextInput style={styles.txtinput} placeholder='Post Office' value={postOffice} onChangeText={(value) => setPostOffice(value)} />
+          <TextInput style={styles.txtinput} placeholder='PoliceStation' value={ps} onChangeText={(value) => setPs(value)} />
+          <TextInput style={styles.txtinput} placeholder='pin No.' value={pinNo} onChangeText={(value) => setPinNo(value)} />
           <TouchableHighlight>
             <Text style={styles.custombutton}
               onPress={() => saveData()}>submit</Text>
           </TouchableHighlight>
         </ScrollView>
       </View>
-      {/* <View style={[styles.portion4, { flex: 5 }]} >
-         
-         
-
-
-      </View> */}
-
-      {/* <ScrollView>
-          
-
-          <View style={[styles.portion2, { flex: 5 }]}>
-
-            
-
-
-
-          </View>
-        </ScrollView> */}
 
     </KeyboardAvoidingView>
   );
@@ -317,7 +335,7 @@ const styles = StyleSheet.create({
 
   },
   txtinput: {
-    textAlign: 'Left',
+    textAlign: 'left',
     borderWidth: 1,
     borderColor: 'black',
     backgroundColor: 'white',
